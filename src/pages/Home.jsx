@@ -8,7 +8,7 @@ const Home = () => {
       <Header />
 
       <div className="container mt-5">
-        <h1 className="text-center">GlobalLink</h1>
+        <h1 className="text-center fw-semibold">GlobalLink</h1>
         <p className="fs-5 text-center">Escolha seu tipo de usuário</p>
       </div>
 
@@ -22,13 +22,13 @@ const Home = () => {
               <span className="text-secondary mt-3">
                 Monitore doações e estoques em tempo real,<br className="d-none d-md-block" /> gerencie necessidades da sua comunidade.
               </span>
-              <ul className="mt-4 text-secondary text-start mx-auto" style={{maxWidth: "300px"}}>
+              <ul className="mt-4 text-secondary text-start mx-auto">
                 <li>Monitoramento IoT em tempo real</li>
                 <li>Calculadora de necessidades</li>
                 <li>Gestão de doadores</li>
                 <li>Relatórios de impacto</li>
               </ul>
-              <Link to="" className="mt-4">
+              <Link to="/OngLogin" className="mt-4">
                 <button className="btn btn-primary w-100 fw-semibold">
                   Continuar com ONG
                 </button>
@@ -43,7 +43,7 @@ const Home = () => {
               <span className="text-secondary mt-3">
                 Encontre ONGs que precisam de ajuda e faça<br className="d-none d-md-block" /> doações com incentivos fiscais.
               </span>
-              <ul className="mt-4 text-secondary text-start mx-auto" style={{maxWidth: "300px"}}>
+              <ul className="mt-4 text-secondary text-start mx-auto">
                 <li>Encontrar ONGs próximas</li>
                 <li>Doações com incentivos fiscais</li>
                 <li>Responsabilidade social</li>

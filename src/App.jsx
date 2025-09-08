@@ -1,12 +1,21 @@
-import './App.css'
-import Home from "./pages/Home"
+import { BrowserRouter, Route, Routes } from "react-router";
+import "./App.css";
+import Home from "./pages/Home";
+import OngLogin from "./pages/OngLogin";
 
 function App() {
   return (
     <>
-    <Home />
+      <BrowserRouter>
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/OngLogin" element={<OngLogin />} />
+          </Routes>
+        </main>
+      </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
