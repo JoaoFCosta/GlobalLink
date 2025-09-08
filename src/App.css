@@ -1,0 +1,36 @@
+body.light-theme {
+    background: #e8efff;
+    color: #222;
+}
+
+body.dark-theme {
+    background: #181a20;
+    color: #f1f1f1;
+}
+
+.dark-theme .bg-white {
+    background: #23263a !important;
+    color: #f1f1f1 !important;
+}
+
+.dark-theme .border {
+    border-color: #444 !important;
+}
+
+.dark-theme .btn-primary {
+    background: #6c63ff;
+    border-color: #6c63ff;
+}
+
+.dark-theme .btn-success {
+    background: #4bb543;
+    border-color: #4bb543;
+}
+
+.dark-theme .text-primary {
+    color: #6c63ff !important;
+}
+
+.dark-theme .text-success {
+    color: #4bb543 !important;
+}
