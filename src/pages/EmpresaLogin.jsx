@@ -2,7 +2,7 @@ import React from "react";
 import LogedHeader from "../components/LogedHeader";
 import { Link } from "react-router";
 
-const OngLogin = () => {
+const EmpresaLogin = () => {
   return (
     <>
       <div className="d-flex justify-content-between">
@@ -15,9 +15,9 @@ const OngLogin = () => {
         <div className="row justify-content-center">
           <div className="col-12 col-md-6 col-lg-5">
             <div className="border rounded-4 bg-white p-4 d-flex text-center justify-content-center flex-column h-100 shadow-sm">
-              <h2 className="text-primary fw-normal">Login - ONG</h2>
+              <h2 className="text-success fw-normal">Login - Empresa</h2>
               <span className="text-secondary">
-                Acesse sua conta para gerenciar ações e estoque
+              Acesse sua conta para encontrar ONGs e fazer doações
               </span>
 
               <div className="text-start mt-3">
@@ -38,13 +38,14 @@ const OngLogin = () => {
                 />
               </div>
               <Link to="/" className="mt-3">
-                <button className="btn btn-primary w-100 rounded-3 fw-medium">
+                <button className="btn btn-success w-100 rounded-3 fw-medium">
                   Entrar
                 </button>
               </Link>
 
               <p className="mt-3">
-                Não tem uma conta?<Link className="text-decoration-none"> Cadastre-se aqui</Link>
+                Não tem uma conta?
+                <Link to="/EmpresaCadastro" className="text-decoration-none "> Cadastre-se aqui</Link>
               </p>
             </div>
           </div>
@@ -54,4 +55,4 @@ const OngLogin = () => {
   );
 };
 
-export default OngLogin;
+export default EmpresaLogin;

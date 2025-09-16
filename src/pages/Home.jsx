@@ -49,7 +49,7 @@ const Home = () => {
                 <li>Responsabilidade social</li>
                 <li>Certificados de doação</li>
               </ul>
-              <Link to="" className="mt-4">
+              <Link to="/EmpresaLogin" className="mt-4">
                 <button className="btn btn-success w-100 fw-semibold">
                   Continuar com Empresa
                 </button>

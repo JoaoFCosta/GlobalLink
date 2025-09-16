@@ -1,17 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useTheme } from "../contexts/ThemeContext";
 
 const LogedHeader = () => {
-  const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add("dark-theme");
-      document.body.classList.remove("light-theme");
-    } else {
-      document.body.classList.add("light-theme");
-      document.body.classList.remove("dark-theme");
-    }
-  }, [darkMode]);
+  const { darkMode, toggleTheme } = useTheme();
 
   return (
     <div className="d-flex fs-4 justify-content-end me-3 mt-3 align-items-center">
@@ -25,7 +16,7 @@ const LogedHeader = () => {
           type="checkbox"
           role="switch"
           checked={darkMode}
-          onChange={() => setDarkMode((prev) => !prev)}
+          onChange={toggleTheme}
           aria-label="Alternar tema"
         />
       </div>
