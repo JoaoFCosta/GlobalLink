@@ -8,7 +8,7 @@ const Home = () => {
       <Header />
 
       <div className="container mt-5">
-        <h1 className="text-center text-success fw-semibold"><i className="bi bi-globe text-primary"></i>GlobalLink</h1>
+        <h1 className="text-center text-success fw-semibold"><i className="bi bi-globe text-primary">Global</i>Link</h1>
         <p className="fs-5 text-center">Escolha seu tipo de usuário</p>
       </div>
 

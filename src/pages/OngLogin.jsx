@@ -44,7 +44,11 @@ const OngLogin = () => {
               </Link>
 
               <p className="mt-3">
-                Não tem uma conta?<Link className="text-decoration-none"> Cadastre-se aqui</Link>
+                Não tem uma conta?
+                <Link to="/OngCadastro" className="text-decoration-none">
+                  {" "}
+                  Cadastre-se aqui
+                </Link>
               </p>
             </div>
           </div>

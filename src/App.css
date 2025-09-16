@@ -45,6 +45,7 @@ body.dark-theme {
 }
 
 .dark-theme input,
+.dark-theme textarea,
 .dark-theme select {
   background-color: #2a2d3a !important;
   color: #f1f1f1 !important;
