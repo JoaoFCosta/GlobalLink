@@ -29,7 +29,7 @@ const OngLogin = () => {
                   className="w-100 d-flex border-0 rounded-3 bg-secondary-subtle p-2 px-3 mb-4"
                 />
 
-                <span className="fw-bold">E-mail</span>
+                <span className="fw-bold">Senha</span>
                 <input
                   type="password"
                   name="password"

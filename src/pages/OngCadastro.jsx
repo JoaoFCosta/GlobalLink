@@ -33,6 +33,7 @@ const OngCadastro = () => {
                     type="text"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="Ex: Instituto Ajudar"
+                    required
                   />
                 </div>
 
@@ -42,6 +43,7 @@ const OngCadastro = () => {
                     type="text"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="00.000.000/0000-00"
+                    required
                   />
                 </div>
 
@@ -51,6 +53,7 @@ const OngCadastro = () => {
                     type="email"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="Ex: contato@ajudar.com"
+                    required
                   />
                 </div>
 
@@ -60,6 +63,7 @@ const OngCadastro = () => {
                     type="tel"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="(11) 99999-9999"
+                    required
                   />
                 </div>
 
@@ -68,6 +72,7 @@ const OngCadastro = () => {
                   <input
                     type="password"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
+                    required
                   />
                 </div>
 
@@ -76,6 +81,7 @@ const OngCadastro = () => {
                   <input
                     type="password"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
+                    required
                   />
                 </div>
 
@@ -87,6 +93,7 @@ const OngCadastro = () => {
                     type="text"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="Ex: Rua do Comércio"
+                    required
                   />
                 </div>
 
@@ -96,6 +103,7 @@ const OngCadastro = () => {
                     type="text"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="000"
+                    required
                   />
                 </div>
 
@@ -114,6 +122,7 @@ const OngCadastro = () => {
                     type="text"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="Vila Nova"
+                    required
                   />
                 </div>
 
@@ -123,6 +132,7 @@ const OngCadastro = () => {
                     type="text"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="12345-678"
+                    required
                   />
                 </div>
 
@@ -134,6 +144,7 @@ const OngCadastro = () => {
                     name="sobre"
                     className="w-100 p-4 rounded-3"
                     placeholder="Descreva a missão e objetivos da sua ONG..."
+                    required
                   ></textarea>
                 </div>
 

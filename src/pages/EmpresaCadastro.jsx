@@ -1,8 +1,81 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../components/Header";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const EmpresaCadastro = () => {
+  const [nome, setNome] = useState("");
+  const [cnpj, setCnpj] = useState("");
+  const [email, setEmail] = useState("");
+  const [tel, setTel] = useState("");
+  const [password, setPassword] = useState("");
+  const [rua, setRua] = useState("");
+  const [numero, setNumero] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [cep, setCep] = useState("");
+  const navigate = useNavigate();
+
+  const handleCreateAcc = (e) => {
+    e.preventDefault();
+
+    // Validação simples
+    if (
+      !nome ||
+      !cnpj ||
+      !email ||
+      !password ||
+      !rua ||
+      !numero ||
+      !bairro ||
+      !cep
+    ) {
+      alert("Preencha todos os campos obrigatórios!");
+      return;
+    }
+
+    const empresaData = {
+      nome,
+      cnpj,
+      email,
+      tel,
+      password,
+      endereco: {
+        rua,
+        numero,
+        bairro,
+        cep,
+      },
+    };
+
+    try {
+      // Pega empresas já salvas no localStorage
+      const empresasSalvas = JSON.parse(localStorage.getItem("empresas")) || [];
+
+      // Adiciona a nova
+      empresasSalvas.push(empresaData);
+
+      // Salva de volta no localStorage
+      localStorage.setItem("empresas", JSON.stringify(empresasSalvas));
+
+      alert("Cadastro realizado com sucesso!");
+
+      // Resetar os campos
+      setNome("");
+      setCnpj("");
+      setEmail("");
+      setTel("");
+      setPassword("");
+      setRua("");
+      setNumero("");
+      setBairro("");
+      setCep("");
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao salvar empresa no localStorage.");
+    }
+
+    navigate("/DashboardEmpresa");
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between">
@@ -12,7 +85,7 @@ const EmpresaCadastro = () => {
         <Header />
       </div>
 
-      <div className="container-fluid">
+      <form className="container-fluid" onSubmit={handleCreateAcc}>
         <div className="row justify-content-center text-center g-0">
           <div className="col-11 col-md-10 col-lg-8">
             <div className="border rounded-4 bg-white p-3 p-md-4 d-flex text-center justify-content-center flex-column h-100 shadow-sm">
@@ -27,59 +100,102 @@ const EmpresaCadastro = () => {
                 </span>
 
                 <div className="col-12 col-md-6">
-                  <span className="fw-medium">Nome da Empresa *</span>
+                  <label className="fw-medium" htmlFor="frmNome">
+                    Nome da Empresa *
+                  </label>
                   <input
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
                     type="text"
-                    className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
+                    name="frmNome"
+                    id="frmNome"
+                    className="form-control w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="Ex: SuperMercado BomPreço"
+                    required
                   />
                 </div>
 
                 <div className="col-12 col-md-6">
-                  <span className="fw-medium">CNPJ *</span>
+                  <label className="fw-medium" htmlFor="frmCNPJ">
+                    CNPJ *
+                  </label>
                   <input
-                    type="text"
+                    value={cnpj}
+                    onChange={(e) => setCnpj(e.target.value)}
+                    type="number"
+                    name="frmCNPJ"
+                    id="frmCNPJ"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="00.000.000/0000-00"
+                    maxLength={14}
+                    required
                   />
                 </div>
 
                 <div className="col-12 col-md-6">
-                  <span className="fw-medium">E-mail *</span>
+                  <label className="fw-medium" htmlFor="frmEmail">
+                    E-mail *
+                  </label>
                   <input
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     type="email"
-                    className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
+                    name="frmEmail"
+                    id="frmEmail"
+                    className="form-control w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="Ex: contato@bompreco.com"
+                    required
                   />
                 </div>
 
                 <div className="col-12 col-md-6">
-                  <span className="fw-medium">Telefone *</span>
+                  <label className="fw-medium" htmlFor="frmTel">
+                    Telefone *
+                  </label>
                   <input
+                    value={tel}
+                    onChange={(e) => setTel(e.target.value)}
                     type="tel"
+                    name="frmTel"
+                    id="frmTel"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="(11) 99999-9999"
+                    required
                   />
                 </div>
 
                 <div className="col-12 col-md-6">
-                  <span className="fw-medium">Senha *</span>
+                  <label className="fw-medium" htmlFor="frmPassword">
+                    Senha *
+                  </label>
                   <input
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     type="password"
+                    name="frmPassword"
+                    id="frmPassword"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
+                    required
                   />
                 </div>
 
                 <div className="col-12 col-md-6">
-                  <span className="fw-medium">Confirmar Senha *</span>
+                  <label className="fw-medium" htmlFor="frmPassword">
+                    Confirmar Senha *
+                  </label>
                   <input
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     type="password"
+                    name="frmPassword"
+                    id="frmPassword"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
+                    required
                   />
                 </div>
 
                 <div className="col-12">
-                  <span className="fw-medium">Ramo de Atuação</span>
+                  <label className="fw-medium">Ramo de Atuação</label>
                   <select
                     name="atuacao"
                     className="w-100 p-2 rounded-3 border-0 bg-secondary-subtle"
@@ -95,25 +211,39 @@ const EmpresaCadastro = () => {
                 <span className="fw-medium fs-5 mt-4 mb-3">Endereço</span>
 
                 <div className="col-12 col-md-9">
-                  <span className="fw-medium">Rua *</span>
+                  <label className="fw-medium" htmlFor="frmRua">
+                    Rua *
+                  </label>
                   <input
+                    value={rua}
+                    onChange={(e) => setRua(e.target.value)}
                     type="text"
+                    name="frmRua"
+                    id="frmRua"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="Ex: Rua do Comércio"
+                    required
                   />
                 </div>
 
                 <div className="col-12 col-md-3">
-                  <span className="fw-medium">Número *</span>
+                  <label className="fw-medium" htmlFor="frmNumero">
+                    Número *
+                  </label>
                   <input
+                    value={numero}
+                    onChange={(e) => setNumero(e.target.value)}
                     type="text"
+                    name="frmNumero"
+                    id="frmNumero"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="000"
+                    required
                   />
                 </div>
 
                 <div className="col-12 col-md-4">
-                  <span className="fw-medium">Complemento</span>
+                  <label className="fw-medium">Complemento</label>
                   <input
                     type="text"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
@@ -122,18 +252,31 @@ const EmpresaCadastro = () => {
                 </div>
 
                 <div className="col-12 col-md-4">
-                  <span className="fw-medium">Bairro *</span>
+                  <label className="fw-medium" htmlFor="frmBairro">
+                    Bairro *
+                  </label>
                   <input
+                    value={bairro}
+                    onChange={(e) => setBairro(e.target.value)}
                     type="text"
+                    name="frmBairro"
+                    id="frmBairro"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="Vila Nova"
+                    required
                   />
                 </div>
 
                 <div className="col-12 col-md-4">
-                  <span className="fw-medium">CEP *</span>
+                  <label className="fw-medium" htmlFor="frmCep">
+                    CEP *
+                  </label>
                   <input
+                    value={cep}
+                    onChange={(e) => setCep(e.target.value)}
                     type="text"
+                    name="frmCep"
+                    id="frmCep"
                     className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                     placeholder="12345-678"
                   />
@@ -158,7 +301,10 @@ const EmpresaCadastro = () => {
                 </div>
 
                 <div className="col-12 text-center mt-4">
-                  <button className="btn w-100 btn-success px-5 py-2 rounded-3 fw-medium">
+                  <button
+                    type="submit"
+                    className="btn w-100 btn-success px-5 py-2 rounded-3 fw-medium"
+                  >
                     Cadastrar Empresa
                   </button>
                 </div>
@@ -166,7 +312,7 @@ const EmpresaCadastro = () => {
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </>
   );
 };

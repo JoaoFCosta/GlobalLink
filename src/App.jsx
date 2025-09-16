@@ -5,6 +5,7 @@ import OngLogin from "./pages/OngLogin";
 import EmpresaLogin from "./pages/EmpresaLogin";
 import EmpresaCadastro from "./pages/EmpresaCadastro";
 import OngCadastro from "./pages/OngCadastro";
+import DashboardEmpresa from "./pages/DashboardEmpresa";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/EmpresaLogin" element={<EmpresaLogin />} />
             <Route path="/EmpresaCadastro" element={<EmpresaCadastro />} />
             <Route path="/OngCadastro" element={<OngCadastro />} />
+            <Route path="/DashboardEmpresa" element={<DashboardEmpresa />} />
           </Routes>
         </main>
       </BrowserRouter>
