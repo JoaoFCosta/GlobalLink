@@ -167,10 +167,18 @@ const DashboardEmpresa = () => {
               </div>
 
               <div className="col-12 mt-4">
-                <span>
-                  <i className="bi bi-suit-heart fs-3"></i>
-                </span>
-                <span className="ms-2 fs-4 fw-medium">ONGs que precisam de ajuda</span>
+                <div className="bg-white border border-1 border-white p-3 rounded-3">
+                  <span>
+                    <i className="bi bi-suit-heart fs-3"></i>
+                  </span>
+                  <span className="ms-2 fs-4 fw-medium">
+                    ONGs que precisam de ajuda
+                  </span>
+                  <br />
+                  <small>Organizações ordenadas por urgência ou proximidade</small>
+                </div>
+
+                
               </div>
             </div>
           </div>

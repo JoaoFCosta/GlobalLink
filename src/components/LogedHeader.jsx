@@ -30,4 +30,4 @@ const LogedHeader = () => {
 
 export default LogedHeader;
 
-// Não sei por qual motivo eu criei outro header
+// Não sei por qual motivo eu criei outro header, ignore
