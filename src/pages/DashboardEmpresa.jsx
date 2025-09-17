@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import LogedHeader from "../components/LogedHeader";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const DashboardEmpresa = () => {
   const [empresaLogada, setEmpresaLogada] = useState("");
@@ -175,10 +175,293 @@ const DashboardEmpresa = () => {
                     ONGs que precisam de ajuda
                   </span>
                   <br />
-                  <small>Organizações ordenadas por urgência ou proximidade</small>
+                  <small>
+                    Organizações ordenadas por urgência ou proximidade
+                  </small>
+
+                  <div className="col-12 mt-4 border border-1 p-4 rounded-3">
+                    <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between mb-2">
+                      <div>
+                        <span className="fw-bolder fs-3">
+                          Instituto Ajudar{" "}
+                        </span>
+                        <small>🔴</small>
+                        <small className="fw-medium bg-danger text-white p-1 px-2 rounded-pill ms-2">
+                          Crítico
+                        </small>
+                      </div>
+
+                      <button
+                        type="button"
+                        class="btn btn-success w-sm-auto mt-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                      >
+                        Fazer doação
+                      </button>
+
+                      <div
+                        class="modal fade"
+                        id="exampleModal"
+                        tabindex="-1"
+                        aria-labelledby="exampleModalLabel"
+                        aria-hidden="true"
+                      >
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1
+                                class="modal-title fs-5"
+                                id="exampleModalLabel"
+                              >
+                                Doar
+                              </h1>
+                              <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                              ></button>
+                            </div>
+                            <div class="modal-body">
+                              <select
+                                name="doacao"
+                                className="w-100 p-2 rounded-3 border-0 bg-secondary-subtle"
+                              >
+                                <option value="">
+                                  Selecione o tipo de doação
+                                </option>
+                                <option value="agua">Água</option>
+                                <option value="medicamento">
+                                  Medicamentos
+                                </option>
+                                <option value="comida">Comida</option>
+                              </select>
+                            </div>
+                            <div class="modal-footer">
+                              <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                              >
+                                Fechar
+                              </button>
+                              <button
+                                type="button"
+                                class="btn btn-success"
+                                data-bs-dismiss="modal"
+                              >
+                                Confirmar doação
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="d-flex flex-wrap gap-2 mb-3">
+                      <div className="d-flex align-items-center">
+                        <i className="bi bi-geo-alt me-1"></i>
+                        <small>Centro, São Paulo - 16km</small>
+                      </div>
+                      <div className="d-flex align-items-center">
+                        <i className="bi bi-people me-1"></i>
+                        <small>13 pessoas atendidas</small>
+                      </div>
+                    </div>
+
+                    <div className="row g-2 g-md-3">
+                      <div className="col-12 col-sm-6 col-lg-4">
+                        <div className="bg-transparent border border-primary p-3 rounded-3 text-center">
+                          <small className="d-block">Água/dia</small>
+                          <span className="fw-bolder fs-5">
+                            <i className="bi bi-droplet me-1"></i>
+                            26L
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="col-12 col-sm-6 col-lg-4">
+                        <div className="bg-transparent border border-success p-3 rounded-3 text-center">
+                          <small className="d-block">Refeições/dia</small>
+                          <span className="fw-bolder fs-5">
+                            <i className="bi bi-fork-knife me-1"></i>
+                            39
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="col-12 col-sm-6 col-lg-4">
+                        <div className="bg-transparent border border-danger p-3 rounded-3 text-center">
+                          <small className="d-block">Medicamentos/semana</small>
+                          <span className="fw-bolder fs-5">
+                            <i className="bi bi-prescription2 me-1"></i>
+                            26
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12 mt-4 border border-1 p-4 rounded-3">
+                    <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between mb-2">
+                      <div>
+                        <span className="fw-bolder fs-3">
+                          Instituto São José{" "}
+                        </span>
+                        <small>🟡</small>
+                        <small className="fw-medium bg-warning text-dark p-1 px-2 rounded-pill ms-2">
+                          Atenção
+                        </small>
+                      </div>
+
+                      <button
+                        type="button"
+                        class="btn btn-success w-sm-auto mt-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                      >
+                        Fazer doação
+                      </button>
+
+                      <div
+                        class="modal fade"
+                        id="exampleModal"
+                        tabindex="-1"
+                        aria-labelledby="exampleModalLabel"
+                        aria-hidden="true"
+                      >
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1
+                                class="modal-title fs-5"
+                                id="exampleModalLabel"
+                              >
+                                Doar
+                              </h1>
+                              <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                              ></button>
+                            </div>
+                            <div class="modal-body">
+                              <select
+                                name="doacao"
+                                className="w-100 p-2 rounded-3 border-0 bg-secondary-subtle"
+                              >
+                                <option value="">
+                                  Selecione o tipo de doação
+                                </option>
+                                <option value="agua">Água</option>
+                                <option value="medicamento">
+                                  Medicamentos
+                                </option>
+                                <option value="comida">Comida</option>
+                              </select>
+                            </div>
+                            <div class="modal-footer">
+                              <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                              >
+                                Fechar
+                              </button>
+                              <button
+                                type="button"
+                                class="btn btn-success"
+                                data-bs-dismiss="modal"
+                              >
+                                Confirmar doação
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="d-flex flex-wrap gap-2 mb-3">
+                      <div className="d-flex align-items-center">
+                        <i className="bi bi-geo-alt me-1"></i>
+                        <small>Centro, São Paulo - 16km</small>
+                      </div>
+                      <div className="d-flex align-items-center">
+                        <i className="bi bi-people me-1"></i>
+                        <small>13 pessoas atendidas</small>
+                      </div>
+                    </div>
+
+                    <div className="row g-2 g-md-3">
+                      <div className="col-12 col-sm-6 col-lg-4">
+                        <div className="bg-transparent border border-primary p-3 rounded-3 text-center">
+                          <small className="d-block">Água/dia</small>
+                          <span className="fw-bolder fs-5">
+                            <i className="bi bi-droplet me-1"></i>
+                            26L
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="col-12 col-sm-6 col-lg-4">
+                        <div className="bg-transparent border border-success p-3 rounded-3 text-center">
+                          <small className="d-block">Refeições/dia</small>
+                          <span className="fw-bolder fs-5">
+                            <i className="bi bi-fork-knife me-1"></i>
+                            39
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="col-12 col-sm-6 col-lg-4">
+                        <div className="bg-transparent border border-danger p-3 rounded-3 text-center">
+                          <small className="d-block">Medicamentos/semana</small>
+                          <span className="fw-bolder fs-5">
+                            <i className="bi bi-prescription2 me-1"></i>
+                            26
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                
+                <div className="bg-white mt-4 p-3 p-md-4 rounded-3 border">
+                  <div className="mb-3">
+                    <span className="fw-bolder fs-5">
+                      <i className="bi bi-box-seam me-2"></i>Histórico de
+                      doações
+                    </span>
+                    <br />
+                    <small>Suas doações realizadas recentemente</small>
+                  </div>
+                </div>
+
+                <div className="bg-white mt-4 p-3 p-md-4 rounded-3 border">
+                  <div className="row align-items-center">
+                    <div className="col-12 col-md-8">
+                      <span className="text-success fs-4 fw-bold">
+                        <i className="bi bi-currency-dollar me-2"></i>Incentivos
+                        fiscais
+                      </span>
+                      <br />
+                      <small>
+                        Suas doações podem gerar benefícios fiscais através da
+                        Lei Federal 14.258/2021
+                      </small>
+
+                      <Link
+                        to="/IncentivoFiscal"
+                        className="btn btn-success rounded-5 ms-5"
+                      >
+                        <i className="bi bi-file-earmark-post"></i> Incentivos
+                        Fiscais
+                      </Link>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

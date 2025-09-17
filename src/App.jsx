@@ -6,6 +6,7 @@ import EmpresaLogin from "./pages/EmpresaLogin";
 import EmpresaCadastro from "./pages/EmpresaCadastro";
 import OngCadastro from "./pages/OngCadastro";
 import DashboardEmpresa from "./pages/DashboardEmpresa";
+import IncentivoFiscal from "./pages/IncentivoFiscal";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/EmpresaCadastro" element={<EmpresaCadastro />} />
             <Route path="/OngCadastro" element={<OngCadastro />} />
             <Route path="/DashboardEmpresa" element={<DashboardEmpresa />} />
+            <Route path="/IncentivoFiscal" element={<IncentivoFiscal />} />
           </Routes>
         </main>
       </BrowserRouter>

@@ -30,7 +30,7 @@ const Home = () => {
               </ul>
               <Link to="/OngLogin" className="mt-4">
                 <button className="btn btn-primary w-100 fw-semibold">
-                  Continuar com ONG
+                  Continuar como ONG
                 </button>
               </Link>
             </div>
@@ -51,7 +51,7 @@ const Home = () => {
               </ul>
               <Link to="/EmpresaLogin" className="mt-4">
                 <button className="btn btn-success w-100 fw-semibold">
-                  Continuar com Empresa
+                  Continuar como Empresa
                 </button>
               </Link>
             </div>
