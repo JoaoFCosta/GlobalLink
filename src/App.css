@@ -65,3 +65,8 @@ body.dark-theme {
   background-color: #2a2d3a !important;
   color: #f1f1f1 !important;
 }
+
+.light-theme textarea {
+resize: none;
+}
+

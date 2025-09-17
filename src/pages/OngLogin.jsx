@@ -1,13 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import LogedHeader from "../components/LogedHeader";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const OngLogin = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    // Validação simples
+    if (!email || !password) {
+      alert("Preencha todos os campos!");
+      return;
+    }
+
+    try {
+      // Pega empresas salvas no localStorage
+      const ongsSalvas = JSON.parse(localStorage.getItem("ongs")) || [];
+
+      // Procura a empresa com email e senha correspondentes
+      const ongEncontrada = ongsSalvas.find(
+        (ong) => ong.email === email && ong.password === password
+      );
+
+      if (ongEncontrada) {
+        // Salva a sessão da empresa logada
+        localStorage.setItem(
+          "ongLogada",
+          JSON.stringify(ongEncontrada)
+        );
+
+        alert(`Bem-vindo(a), ${ongEncontrada.nome}!`);
+
+        // Resetar os campos
+        setEmail("");
+        setPassword("");
+
+        // Redireciona para o dashboard
+        navigate("/DashboardOng");
+      } else {
+        alert("E-mail ou senha incorretos!");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao fazer login.");
+    }
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between">
         <Link to="/" className="m-3 text-decoration-none">
-          <i class="bi bi-arrow-left-short"></i> Voltar
+          <i className="bi bi-arrow-left-short"></i> Voltar
         </Link>
         <LogedHeader />
       </div>
@@ -20,11 +66,14 @@ const OngLogin = () => {
                 Acesse sua conta para gerenciar ações e estoque
               </span>
 
-              <div className="text-start mt-3">
+              <form onSubmit={handleLogin} className="text-start mt-3">
                 <span className="fw-bold">E-mail</span>
                 <input
                   type="email"
                   name="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
                   className="w-100 d-flex border-0 rounded-3 bg-secondary-subtle p-2 px-3 mb-4"
                 />
@@ -33,16 +82,17 @@ const OngLogin = () => {
                 <input
                   type="password"
                   name="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Sua senha"
                   className="w-100 d-flex border-0 rounded-3 bg-secondary-subtle p-2 px-3"
                 />
-              </div>
-              <Link to="/" className="mt-3">
-                <button className="btn btn-primary w-100 rounded-3 fw-medium">
+
+                <button type="submit" className="btn btn-primary w-100 rounded-3 fw-medium mt-3">
                   Entrar
                 </button>
-              </Link>
-
+              </form>
               <p className="mt-3">
                 Não tem uma conta?
                 <Link to="/OngCadastro" className="text-decoration-none">
