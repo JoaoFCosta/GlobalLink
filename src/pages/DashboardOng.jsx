@@ -177,7 +177,7 @@ const DashboardOng = () => {
             </div>
           </div>
           <div className="d-flex justify-content-center mt-5">
-            <Link to="/" className="btn btn-primary fw-medium">
+            <Link to="/Alerts" className="btn btn-primary fw-medium">
               Alertas
             </Link>
           </div>
