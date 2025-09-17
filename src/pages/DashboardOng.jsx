@@ -97,7 +97,7 @@ const DashboardOng = () => {
               </div>
             </div>
           </div>
-          <div className="d-flex">
+          <div className="d-flex mt-4">
             <i className="bi bi-eye fs-5 me-2"></i>
             <h4>Atividade recente</h4>
           </div>
@@ -178,7 +178,7 @@ const DashboardOng = () => {
           </div>
           <div className="d-flex justify-content-center mt-5">
             <Link to="/Alerts" className="btn btn-primary fw-medium">
-              Alertas
+              Alertas e necessidades
             </Link>
           </div>
         </div>
