@@ -4,16 +4,16 @@ import Paho from "paho-mqtt";
 export function useMqtt(brokerHost, brokerPort, topic) {
   const [distance, setDistance] = useState(null);
   const [weight, setWeight] = useState(null);
-  const [status, setStatus] = useState(null);
+  const [status, setStatus] = useState("--");
   const [isConnected, setIsConnected] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(null);
   const [connectionAttempts, setConnectionAttempts] = useState(0);
 
   useEffect(() => {
-    const port = Number(brokerPort); // garante número
+    const port = Number(brokerPort);
 
     const mqttClient = new Paho.Client(
-      `wss://${brokerHost}:${brokerPort}/mqtt`, // URL completa para WS
+      `ws://${brokerHost}:${port}/mqtt`, // ws para HiveMQ
       `client_${Math.random()}`
     );
 
@@ -21,11 +21,11 @@ export function useMqtt(brokerHost, brokerPort, topic) {
       console.log("✅ Conectado ao broker MQTT");
       setIsConnected(true);
       setConnectionAttempts(0);
-      mqttClient.subscribe(topic);
+      mqttClient.subscribe(topic, { qos: 0 });
     };
 
     const onFailure = (error) => {
-      console.error("❌ Falha na conexão:", error);
+      console.error("❌ Falha na conexão MQTT:", error);
       setIsConnected(false);
       setConnectionAttempts((prev) => prev + 1);
     };
@@ -40,11 +40,17 @@ export function useMqtt(brokerHost, brokerPort, topic) {
     const onMessageArrived = (message) => {
       try {
         const data = JSON.parse(message.payloadString);
-        setDistance(data.distancia);
-        setWeight(data.peso);
+
+        setDistance(data.distancia ?? null);
+        setWeight(data.peso ?? null);
+        setStatus(data.status ?? "--");
         setLastUpdate(new Date());
       } catch (error) {
-        console.error("Erro ao parsear JSON:", error, message.payloadString);
+        console.error(
+          "Erro ao parsear JSON do MQTT:",
+          error,
+          message.payloadString
+        );
       }
     };
 
@@ -55,6 +61,7 @@ export function useMqtt(brokerHost, brokerPort, topic) {
       onSuccess: onConnect,
       onFailure: onFailure,
       reconnect: true,
+      useSSL: false,
     });
 
     return () => {

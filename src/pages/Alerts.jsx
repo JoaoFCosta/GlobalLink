@@ -106,57 +106,62 @@ const Alerts = () => {
           </div>
 
           {/* Alerts List */}
-          <div className="col-12 mt-4 bg-white rounded-3 p-4">
-            {alerts.length === 0 ? (
-              <div className="text-center py-5">
-                <p>Nenhuma necessidade cadastrada ainda.</p>
-              </div>
-            ) : (
-              <div className="row">
-                {alerts.map((alert) => (
-                  <div key={alert.id} className="col-12 col-md-6 col-lg-4 mb-4">
-                    <div className="card h-100 shadow-sm">
-                      <div className="card-header d-flex justify-content-between align-items-center">
-                        <span
-                          className={`badge bg-${getUrgencyColor(
-                            alert.urgency
-                          )}`}
-                        >
-                          {alert.urgency.charAt(0).toUpperCase() +
-                            alert.urgency.slice(1)}
-                        </span>
-                        <button
-                          className="btn btn-sm btn-outline-danger"
-                          onClick={() => handleDelete(alert.id)}
-                        >
-                          ×
-                        </button>
-                      </div>
-                      <div className="card-body">
-                        <h5 className="card-title">{alert.title}</h5>
-                        <p className="card-text">{alert.description}</p>
-                        <p className="text-muted small">
-                          <strong>Categoria:</strong> {alert.category}
-                        </p>
-                        {alert.location && (
+          <div className="justify-content-center">
+            <div className="mt-4 bg-white rounded-3 p-4">
+              {alerts.length === 0 ? (
+                <div className="text-center py-5">
+                  <p>Nenhuma necessidade cadastrada ainda.</p>
+                </div>
+              ) : (
+                <div className="row">
+                  {alerts.map((alert) => (
+                    <div
+                      key={alert.id}
+                      className="col-12 col-md-6 col-lg-4 mb-4"
+                    >
+                      <div className="card h-100 shadow-sm">
+                        <div className="card-header d-flex justify-content-between align-items-center">
+                          <span
+                            className={`badge bg-${getUrgencyColor(
+                              alert.urgency
+                            )}`}
+                          >
+                            {alert.urgency.charAt(0).toUpperCase() +
+                              alert.urgency.slice(1)}
+                          </span>
+                          <button
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => handleDelete(alert.id)}
+                          >
+                            ×
+                          </button>
+                        </div>
+                        <div className="card-body">
+                          <h5 className="card-title">{alert.title}</h5>
+                          <p className="card-text">{alert.description}</p>
                           <p className="text-muted small">
-                            <strong>Local:</strong> {alert.location}
+                            <strong>Categoria:</strong> {alert.category}
                           </p>
-                        )}
-                        {alert.contact && (
-                          <p className="text-muted small">
-                            <strong>Contato:</strong> {alert.contact}
-                          </p>
-                        )}
-                      </div>
-                      <div className="card-footer text-muted small">
-                        Criado em: {alert.createdAt}
+                          {alert.location && (
+                            <p className="text-muted small">
+                              <strong>Local:</strong> {alert.location}
+                            </p>
+                          )}
+                          {alert.contact && (
+                            <p className="text-muted small">
+                              <strong>Contato:</strong> {alert.contact}
+                            </p>
+                          )}
+                        </div>
+                        <div className="card-footer text-muted small">
+                          Criado em: {alert.createdAt}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

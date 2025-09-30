@@ -1,15 +1,15 @@
-import { useMqtt } from "../hooks/useMqtt";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { useMqtt } from "../hooks/useMqtt";
 import LogedHeader from "../components/LogedHeader";
 import Cam from "../assets/cam.jpg";
 
 const DashboardOng = () => {
   const brokerHost = "broker.hivemq.com";
-  const brokerPort = 8000; // número, não string
+  const brokerPort = 8000;
   const topic = "caminhao/status";
 
-  const { weight, distance, status, lastUpdate } = useMqtt(
+  const { weight, distance, status, lastUpdate, isConnected } = useMqtt(
     brokerHost,
     brokerPort,
     topic
@@ -144,32 +144,36 @@ const DashboardOng = () => {
               <p className="fs-4 fw-medium text-start p-3">
                 Status do caminhão
               </p>
-              <p className="text-start mx-5 fw-bolder fs-4">{status || "--"}</p>
+              <p className="text-start mx-5 fw-bolder fs-4">{status}</p>
             </div>
           </div>
 
-          <div className="border border-1 mt-5 p-3 rounded-3">
-            <p>Informações Técnicas do ESP32</p>
-            <div className="d-flex flex-column flex-md-row gap-3 gap-md-5">
-              <p>
-                Sensor de Peso <br /> HX711 - Pinos DT:18, SCK:19
-              </p>
-              <p>
-                Sensor de Distância <br /> HC-SR04 - Pinos TRIG:22, ECHO:23
-              </p>
-              <p>
-                Comunicação Serial <br /> USB / WiFi
-              </p>
-              <p>
-                Frequência <br /> Atualização a cada 2s
-              </p>
+          <div className="d-flex justify-content-center align-items-center">
+            <div className="col-10 border border-1 mt-5 p-3 rounded-3">
+              <p>Informações Técnicas do ESP32</p>
+              <div className="d-flex flex-column flex-md-row gap-3 gap-md-5">
+                <p>
+                  Sensor de Peso <br /> HX711 - Pinos DT:18, SCK:19
+                </p>
+                <p>
+                  Sensor de Distância <br /> HC-SR04 - Pinos TRIG:22, ECHO:23
+                </p>
+                <p>
+                  Comunicação Serial <br /> USB / WiFi
+                </p>
+                <p>
+                  Frequência <br /> Atualização a cada 2s
+                </p>
+              </div>
+              <div className="mt-3">
+                Última leitura:{" "}
+                {lastUpdate ? lastUpdate.toLocaleString() : "Sem leituras"}
+              </div>
+              <div className="mt-1">
+                Conexão MQTT: {isConnected ? "✅ Online" : "❌ Offline"}
+              </div>
             </div>
-            <span>
-              Última leitura:{" "}
-              {lastUpdate ? lastUpdate.toLocaleString() : "Sem leituras ainda"}
-            </span>
           </div>
-
           <div className="col-12 mt-3 bg-white p-4 shadow-sm rounded-3 mb-5">
             <div className="d-flex flex-column flex-md-row gap-3 gap-md-5 justify-content-center">
               <div className="col-12 col-md-3 border border-1 rounded-3">
