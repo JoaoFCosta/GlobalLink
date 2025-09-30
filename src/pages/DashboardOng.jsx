@@ -1,9 +1,20 @@
+import { useMqtt } from "../hooks/useMqtt";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import LogedHeader from "../components/LogedHeader";
 import Cam from "../assets/cam.jpg";
 
 const DashboardOng = () => {
+  const brokerHost = "broker.hivemq.com";
+  const brokerPort = 8000; // número, não string
+  const topic = "caminhao/status";
+
+  const { weight, distance, status, lastUpdate } = useMqtt(
+    brokerHost,
+    brokerPort,
+    topic
+  );
+
   const [ongLogada, setOngLogada] = useState("");
   const navigate = useNavigate();
 
@@ -113,7 +124,9 @@ const DashboardOng = () => {
           <div className="d-flex flex-column flex-md-row gap-3 gap-md-5 justify-content-center">
             <div className="col-12 col-md-3 border border-1 rounded-3">
               <p className="fs-4 fw-medium text-start p-3">Peso atual</p>
-              <p className="text-start mx-5 fw-bolder fs-4">3.34t</p>
+              <p className="text-start mx-5 fw-bolder fs-4">
+                {weight ? `${weight} t` : "--"}
+              </p>
               <p className="text-start p-3">Última leitura do sensor HX711</p>
             </div>
 
@@ -121,7 +134,9 @@ const DashboardOng = () => {
               <p className="fs-4 fw-medium text-start p-3">
                 Distância do sensor
               </p>
-              <p className="text-start mx-5 fw-bolder fs-4">3.4m</p>
+              <p className="text-start mx-5 fw-bolder fs-4">
+                {distance ? `${distance} m` : "--"}
+              </p>
               <p className="text-start p-3">Sensor ultrassônico HC-SR04</p>
             </div>
 
@@ -129,13 +144,12 @@ const DashboardOng = () => {
               <p className="fs-4 fw-medium text-start p-3">
                 Status do caminhão
               </p>
-              <p className="text-start mx-5 fw-bolder fs-4">Chegando</p>
+              <p className="text-start mx-5 fw-bolder fs-4">{status || "--"}</p>
             </div>
           </div>
 
           <div className="border border-1 mt-5 p-3 rounded-3">
             <p>Informações Técnicas do ESP32</p>
-
             <div className="d-flex flex-column flex-md-row gap-3 gap-md-5">
               <p>
                 Sensor de Peso <br /> HX711 - Pinos DT:18, SCK:19
@@ -150,36 +164,41 @@ const DashboardOng = () => {
                 Frequência <br /> Atualização a cada 2s
               </p>
             </div>
-            <span>Última leitura: 17/09/2025, 16:05:00</span>
+            <span>
+              Última leitura:{" "}
+              {lastUpdate ? lastUpdate.toLocaleString() : "Sem leituras ainda"}
+            </span>
           </div>
-        </div>
 
-        <div className="col-12 mt-3 bg-white p-4 shadow-sm rounded-3 mb-5">
-          <div className="d-flex flex-column flex-md-row gap-3 gap-md-5 justify-content-center">
-            <div className="col-12 col-md-3 border border-1 rounded-3">
-              <p className="fs-4 fw-medium text-start p-3">Pessoas atendidas</p>
-              <p className="text-start mx-5 fw-bolder fs-4">12</p>
-              <p className="text-start p-3">Pessoas por dia</p>
-            </div>
+          <div className="col-12 mt-3 bg-white p-4 shadow-sm rounded-3 mb-5">
+            <div className="d-flex flex-column flex-md-row gap-3 gap-md-5 justify-content-center">
+              <div className="col-12 col-md-3 border border-1 rounded-3">
+                <p className="fs-4 fw-medium text-start p-3">
+                  Pessoas atendidas
+                </p>
+                <p className="text-start mx-5 fw-bolder fs-4">12</p>
+                <p className="text-start p-3">Pessoas por dia</p>
+              </div>
 
-            <div className="col-12 col-md-3 border border-1 rounded-3">
-              <p className="fs-4 fw-medium text-start p-3">
-                Status de necessidade
-              </p>
-              <p className="text-start mx-5 fw-bolder fs-4">🟢 Estável</p>
-              <p className="text-start p-3">Baseado no público atendido</p>
-            </div>
+              <div className="col-12 col-md-3 border border-1 rounded-3">
+                <p className="fs-4 fw-medium text-start p-3">
+                  Status de necessidade
+                </p>
+                <p className="text-start mx-5 fw-bolder fs-4">🟢 Estável</p>
+                <p className="text-start p-3">Baseado no público atendido</p>
+              </div>
 
-            <div className="col-12 col-md-3 border border-1 rounded-3">
-              <p className="fs-4 fw-medium text-start p-3">Doações</p>
-              <p className="text-start mx-5 fw-bolder fs-4">2</p>
-              <p className="text-start p-3">Recebidas hoje</p>
+              <div className="col-12 col-md-3 border border-1 rounded-3">
+                <p className="fs-4 fw-medium text-start p-3">Doações</p>
+                <p className="text-start mx-5 fw-bolder fs-4">2</p>
+                <p className="text-start p-3">Recebidas hoje</p>
+              </div>
             </div>
-          </div>
-          <div className="d-flex justify-content-center mt-5">
-            <Link to="/Alerts" className="btn btn-primary fw-medium">
-              Alertas e necessidades
-            </Link>
+            <div className="d-flex justify-content-center mt-5">
+              <Link to="/Alerts" className="btn btn-primary fw-medium">
+                Alertas e necessidades
+              </Link>
+            </div>
           </div>
         </div>
       </div>
