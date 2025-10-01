@@ -7,45 +7,33 @@ const OngLogin = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Validação simples
     if (!email || !password) {
       alert("Preencha todos os campos!");
       return;
     }
 
     try {
-      // Pega empresas salvas no localStorage
-      const ongsSalvas = JSON.parse(localStorage.getItem("ongs")) || [];
+      const response = await fetch("https://localhost:7226/api/Auth/OngLogin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, senha: password }),
+      });
 
-      // Procura a empresa com email e senha correspondentes
-      const ongEncontrada = ongsSalvas.find(
-        (ong) => ong.email === email && ong.password === password
-      );
-
-      if (ongEncontrada) {
-        // Salva a sessão da empresa logada
-        localStorage.setItem(
-          "ongLogada",
-          JSON.stringify(ongEncontrada)
-        );
-
-        alert(`Bem-vindo(a), ${ongEncontrada.nome}!`);
-
-        // Resetar os campos
-        setEmail("");
-        setPassword("");
-
-        // Redireciona para o dashboard
-        navigate("/DashboardOng");
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("empresaLogada", JSON.stringify(data));
+        alert(`Bem-vindo(a), ${data.nome}!`);
+        navigate("/DashboardEmpresa");
       } else {
-        alert("E-mail ou senha incorretos!");
+        const errorData = await response.json();
+        alert(errorData || "Email ou senha inválidos. Tente novamente.");
       }
     } catch (error) {
-      console.error(error);
-      alert("Erro ao fazer login.");
+      console.error("Erro ao realizar o login:", error);
+      alert("Erro ao conectar com o servidor.");
     }
   };
 
@@ -89,7 +77,10 @@ const OngLogin = () => {
                   className="w-100 d-flex border-0 rounded-3 bg-secondary-subtle p-2 px-3"
                 />
 
-                <button type="submit" className="btn btn-primary w-100 rounded-3 fw-medium mt-3">
+                <button
+                  type="submit"
+                  className="btn btn-primary w-100 rounded-3 fw-medium mt-3"
+                >
                   Entrar
                 </button>
               </form>

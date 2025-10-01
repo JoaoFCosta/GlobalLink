@@ -14,7 +14,7 @@ const OngCadastro = () => {
   const [cep, setCep] = useState("");
   const navigate = useNavigate();
 
-  const handleCreateAcc = (e) => {
+  const handleCreateAcc = async (e) => {
     e.preventDefault();
 
     // Validação simples
@@ -26,54 +26,49 @@ const OngCadastro = () => {
       !rua ||
       !numero ||
       !bairro ||
-      !cep
+      !cep ||
+      !tel
     ) {
       alert("Preencha todos os campos obrigatórios!");
       return;
     }
 
-    const ongData = {
-      nome,
-      cnpj,
-      email,
-      tel,
-      password,
-      endereco: {
-        rua,
-        numero,
-        bairro,
-        cep,
-      },
-    };
-
     try {
-      // Pega empresas já salvas no localStorage
-      const ongsSalvas = JSON.parse(localStorage.getItem("ongs")) || [];
+      const response = await fetch(
+        "https://localhost:7226/api/Auth/OngRegister",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            Nome: nome,
+            Cnpj: cnpj,
+            Email: email,
+            Senha: password, // ⚠️ alterado de password para Senha
+            Rua: rua,
+            Numero: numero,
+            Bairro: bairro,
+            Cep: cep,
+            Telefone: tel, // ⚠️ adicionado
+          }),
+        }
+      );
 
-      // Adiciona a nova
-      ongsSalvas.push(ongData);
-
-      // Salva de volta no localStorage
-      localStorage.setItem("ongs", JSON.stringify(ongsSalvas));
-
-      alert("Cadastro realizado com sucesso!");
-
-      // Resetar os campos
-      setNome("");
-      setCnpj("");
-      setEmail("");
-      setTel("");
-      setPassword("");
-      setRua("");
-      setNumero("");
-      setBairro("");
-      setCep("");
+      if (response.ok) {
+        alert("Cadastro realizado com sucesso!");
+        navigate("/OngLogin"); // Redireciona para a página de login
+      } else {
+        const errorData = await response.json();
+        alert(
+          errorData ||
+            "Erro ao cadastrar. Verifique os dados e tente novamente."
+        );
+      }
     } catch (error) {
-      console.error(error);
-      alert("Erro ao salvar empresa no localStorage.");
+      console.error("Erro ao realizar o cadastro:", error);
+      alert("Erro ao conectar com o servidor.");
     }
-
-    navigate("/DashboardOng");
   };
 
   return (

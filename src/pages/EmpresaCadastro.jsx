@@ -26,7 +26,8 @@ const EmpresaCadastro = () => {
       !rua ||
       !numero ||
       !bairro ||
-      !cep
+      !cep ||
+      !tel
     ) {
       alert("Preencha todos os campos obrigatórios!");
       return;
