@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import LogedHeader from "../components/LogedHeader";
 import { Link, useNavigate } from "react-router";
+import Doacoes from "./Doacoes";
 
 const DashboardEmpresa = () => {
   const [empresaLogada, setEmpresaLogada] = useState("");
@@ -154,13 +155,13 @@ const DashboardEmpresa = () => {
                     </div>
 
                     <div className="col-12 col-md-3 text-center text-md-end">
-                      <button className="btn btn-primary px-4 py-2">
+                      <Link to="/Doacoes" className="btn btn-primary px-4 py-2">
                         <i className="bi bi-gift me-2"></i>
                         <span className="d-none d-sm-inline">
                           Ver oportunidades
                         </span>
                         <span className="d-sm-none">Ver mais</span>
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -189,73 +190,6 @@ const DashboardEmpresa = () => {
                         <small className="fw-medium bg-danger text-white p-1 px-2 rounded-pill ms-2">
                           Crítico
                         </small>
-                      </div>
-
-                      <button
-                        type="button"
-                        class="btn btn-success w-sm-auto mt-2"
-                        data-bs-toggle="modal"
-                        data-bs-target="#exampleModal"
-                      >
-                        Fazer doação
-                      </button>
-
-                      <div
-                        class="modal fade"
-                        id="exampleModal"
-                        tabindex="-1"
-                        aria-labelledby="exampleModalLabel"
-                        aria-hidden="true"
-                      >
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h1
-                                class="modal-title fs-5"
-                                id="exampleModalLabel"
-                              >
-                                Doar
-                              </h1>
-                              <button
-                                type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                              ></button>
-                            </div>
-                            <div class="modal-body">
-                              <select
-                                name="doacao"
-                                className="w-100 p-2 rounded-3 border-0 bg-secondary-subtle"
-                              >
-                                <option value="">
-                                  Selecione o tipo de doação
-                                </option>
-                                <option value="agua">Água</option>
-                                <option value="medicamento">
-                                  Medicamentos
-                                </option>
-                                <option value="comida">Comida</option>
-                              </select>
-                            </div>
-                            <div class="modal-footer">
-                              <button
-                                type="button"
-                                class="btn btn-secondary"
-                                data-bs-dismiss="modal"
-                              >
-                                Fechar
-                              </button>
-                              <button
-                                type="button"
-                                class="btn btn-success"
-                                data-bs-dismiss="modal"
-                              >
-                                Confirmar doação
-                              </button>
-                            </div>
-                          </div>
-                        </div>
                       </div>
                     </div>
 
@@ -313,73 +247,6 @@ const DashboardEmpresa = () => {
                         <small className="fw-medium bg-warning text-dark p-1 px-2 rounded-pill ms-2">
                           Atenção
                         </small>
-                      </div>
-
-                      <button
-                        type="button"
-                        class="btn btn-success w-sm-auto mt-2"
-                        data-bs-toggle="modal"
-                        data-bs-target="#exampleModal"
-                      >
-                        Fazer doação
-                      </button>
-
-                      <div
-                        class="modal fade"
-                        id="exampleModal"
-                        tabindex="-1"
-                        aria-labelledby="exampleModalLabel"
-                        aria-hidden="true"
-                      >
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h1
-                                class="modal-title fs-5"
-                                id="exampleModalLabel"
-                              >
-                                Doar
-                              </h1>
-                              <button
-                                type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                              ></button>
-                            </div>
-                            <div class="modal-body">
-                              <select
-                                name="doacao"
-                                className="w-100 p-2 rounded-3 border-0 bg-secondary-subtle"
-                              >
-                                <option value="">
-                                  Selecione o tipo de doação
-                                </option>
-                                <option value="agua">Água</option>
-                                <option value="medicamento">
-                                  Medicamentos
-                                </option>
-                                <option value="comida">Comida</option>
-                              </select>
-                            </div>
-                            <div class="modal-footer">
-                              <button
-                                type="button"
-                                class="btn btn-secondary"
-                                data-bs-dismiss="modal"
-                              >
-                                Fechar
-                              </button>
-                              <button
-                                type="button"
-                                class="btn btn-success"
-                                data-bs-dismiss="modal"
-                              >
-                                Confirmar doação
-                              </button>
-                            </div>
-                          </div>
-                        </div>
                       </div>
                     </div>
 

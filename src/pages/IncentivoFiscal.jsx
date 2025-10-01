@@ -48,12 +48,6 @@ const IncentivoFiscal = () => {
               </span>
               <span className="d-md-none">Falar com especialista</span>
             </button>
-            <button className="btn btn-info">
-              <span className="d-none d-md-inline">
-                Saiba como doar com incentivo fiscal
-              </span>
-              <span className="d-md-none">Como doar</span>
-            </button>
           </div>
         </div>
       </div>

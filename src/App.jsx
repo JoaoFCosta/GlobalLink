@@ -9,6 +9,7 @@ import DashboardEmpresa from "./pages/DashboardEmpresa";
 import IncentivoFiscal from "./pages/IncentivoFiscal";
 import DashboardOng from "./pages/DashboardOng";
 import Alerts from "./pages/Alerts";
+import Doacoes from "./pages/Doacoes";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/IncentivoFiscal" element={<IncentivoFiscal />} />
             <Route path="/DashboardOng" element={<DashboardOng />} />
             <Route path="/Alerts" element={<Alerts />} />
+            <Route path="/Doacoes" element={<Doacoes />} />
           </Routes>
         </main>
       </BrowserRouter>
