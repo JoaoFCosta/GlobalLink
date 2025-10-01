@@ -192,7 +192,7 @@ const DashboardOng = () => {
                 <p className="text-start p-3">Baseado no público atendido</p>
               </div>
 
-              <div className="col-12 col-md-3 border border-1 rounded-3">
+              <div className="col-12 col-md-3 mb-5 border border-1 rounded-3">
                 <p className="fs-4 fw-medium text-start p-3">Doações</p>
                 <p className="text-start mx-5 fw-bolder fs-4">2</p>
                 <p className="text-start p-3">Recebidas hoje</p>

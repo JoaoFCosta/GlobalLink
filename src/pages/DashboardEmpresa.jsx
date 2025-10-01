@@ -306,7 +306,7 @@ const DashboardEmpresa = () => {
                   </div>
                 </div>
 
-                <div className="bg-white mt-4 p-3 p-md-4 rounded-3 border">
+                <div className="bg-white mt-4 p-3 p-md-4 mb-5 rounded-3 border">
                   <div className="row align-items-center">
                     <div className="col-12 col-md-8">
                       <span className="text-success fs-4 fw-bold">

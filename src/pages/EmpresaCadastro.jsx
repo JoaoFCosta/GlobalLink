@@ -14,7 +14,7 @@ const EmpresaCadastro = () => {
   const [cep, setCep] = useState("");
   const navigate = useNavigate();
 
-  const handleCreateAcc = (e) => {
+  const handleCreateAcc = async (e) => {
     e.preventDefault();
 
     // Validação simples
@@ -32,48 +32,42 @@ const EmpresaCadastro = () => {
       return;
     }
 
-    const empresaData = {
-      nome,
-      cnpj,
-      email,
-      tel,
-      password,
-      endereco: {
-        rua,
-        numero,
-        bairro,
-        cep,
-      },
-    };
-
     try {
-      // Pega empresas já salvas no localStorage
-      const empresasSalvas = JSON.parse(localStorage.getItem("empresas")) || [];
+      const response = await fetch(
+        "https://localhost:7226/api/Auth/CompanyRegister",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            Nome: nome,
+            Cnpj: cnpj,
+            Email: email,
+            Senha: password, // ⚠️ alterado de password para Senha
+            Rua: rua,
+            Numero: numero,
+            Bairro: bairro,
+            Cep: cep,
+            Telefone: tel, // ⚠️ adicionado
+          }),
+        }
+      );
 
-      // Adiciona a nova
-      empresasSalvas.push(empresaData);
-
-      // Salva de volta no localStorage
-      localStorage.setItem("empresas", JSON.stringify(empresasSalvas));
-
-      alert("Cadastro realizado com sucesso!");
-
-      // Resetar os campos
-      setNome("");
-      setCnpj("");
-      setEmail("");
-      setTel("");
-      setPassword("");
-      setRua("");
-      setNumero("");
-      setBairro("");
-      setCep("");
+      if (response.ok) {
+        alert("Cadastro realizado com sucesso!");
+        navigate("/EmpresaLogin"); // Redireciona para a página de login
+      } else {
+        const errorData = await response.json();
+        alert(
+          errorData ||
+            "Erro ao cadastrar. Verifique os dados e tente novamente."
+        );
+      }
     } catch (error) {
-      console.error(error);
-      alert("Erro ao salvar empresa no localStorage.");
+      console.error("Erro ao realizar o cadastro:", error);
+      alert("Erro ao conectar com o servidor.");
     }
-
-    navigate("/DashboardEmpresa");
   };
 
   return (
@@ -180,21 +174,6 @@ const EmpresaCadastro = () => {
                 </div>
 
                 <div className="col-12 col-md-6">
-                  <label className="fw-medium" htmlFor="frmPassword">
-                    Confirmar Senha *
-                  </label>
-                  <input
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    type="password"
-                    name="frmPassword"
-                    id="frmPassword"
-                    className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
-                    required
-                  />
-                </div>
-
-                <div className="col-12">
                   <label className="fw-medium">Ramo de Atuação</label>
                   <select
                     name="atuacao"

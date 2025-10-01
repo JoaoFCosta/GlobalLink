@@ -12,7 +12,6 @@ const OngCadastro = () => {
   const [numero, setNumero] = useState("");
   const [bairro, setBairro] = useState("");
   const [cep, setCep] = useState("");
-  const [missao, setMissao] = useState("");
   const navigate = useNavigate();
 
   const handleCreateAcc = (e) => {
@@ -27,8 +26,7 @@ const OngCadastro = () => {
       !rua ||
       !numero ||
       !bairro ||
-      !cep ||
-      !missao
+      !cep
     ) {
       alert("Preencha todos os campos obrigatórios!");
       return;
@@ -40,7 +38,6 @@ const OngCadastro = () => {
       email,
       tel,
       password,
-      missao,
       endereco: {
         rua,
         numero,
@@ -71,7 +68,6 @@ const OngCadastro = () => {
       setNumero("");
       setBairro("");
       setCep("");
-      setMissao("");
     } catch (error) {
       console.error(error);
       alert("Erro ao salvar empresa no localStorage.");
@@ -271,25 +267,6 @@ const OngCadastro = () => {
                         id="frmCep"
                         className="w-100 rounded-3 border-0 bg-secondary-subtle p-2"
                         placeholder="12345-678"
-                        required
-                      />
-                    </div>
-
-                    <span className="fw-medium fs-5 mt-4 mb-3">
-                      Sobre a ONG
-                    </span>
-
-                    <div className="col-12 col-md-12">
-                      <label className="fw-medium" htmlFor="frmMissao">
-                        Missão da ONG *
-                      </label>
-                      <textarea
-                        value={missao}
-                        onChange={(e) => setMissao(e.target.value)}
-                        name="frmMissao"
-                        id="frmMissao"
-                        className="w-100 p-4 rounded-3"
-                        placeholder="Descreva a missão e objetivos da sua ONG..."
                         required
                       />
                     </div>
