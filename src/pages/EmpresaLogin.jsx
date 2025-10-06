@@ -25,16 +25,66 @@ const EmpresaLogin = () => {
         }
       );
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Dados da empresa logada:", data);
-        localStorage.setItem("empresaLogada", JSON.stringify(data));
-        alert(`Bem-vindo(a), ${data.nome}!`);
-        navigate("/DashboardEmpresa");
-      } else {
+      if (!response.ok) {
         const errorData = await response.json();
         alert(errorData || "Email ou senha inválidos. Tente novamente.");
+        return;
       }
+
+      const authData = await response.json();
+      console.log("Resposta de autenticação:", authData);
+
+      // Se o backend retornar um token, gravamos para uso posterior
+      const token = authData.token || authData.accessToken || null;
+      if (token) {
+        localStorage.setItem("empresaToken", token);
+      }
+
+      let empresaCompleta = authData;
+
+      try {
+        // Se o authData contiver um id, buscamos diretamente por id (mais eficiente)
+        if (authData.id) {
+          const companyByIdUrl = `http://localhost:5102/api/Companies/${authData.id}`;
+          const res = await fetch(companyByIdUrl, {
+            method: "GET",
+            headers: token
+              ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
+              : { "Content-Type": "application/json" },
+          });
+
+          if (res.ok) {
+            const companyData = await res.json();
+            empresaCompleta = companyData || empresaCompleta;
+          }
+        } else {
+          // fallback: busca lista e tenta encontrar pelo email
+          const companiesUrl = "http://localhost:5102/api/Companies";
+          const companiesRes = await fetch(companiesUrl, {
+            method: "GET",
+            headers: token
+              ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
+              : { "Content-Type": "application/json" },
+          });
+
+          if (companiesRes.ok) {
+            const companies = await companiesRes.json();
+            const found = (Array.isArray(companies) ? companies : [])
+              .find((c) => c.email && authData.email && c.email.toLowerCase() === authData.email.toLowerCase());
+
+            if (found) {
+              empresaCompleta = found;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Não foi possível buscar dados completos da empresa:", err);
+      }
+
+      // Salva o objeto completo (ou pelo menos o retorno do login)
+      localStorage.setItem("empresaLogada", JSON.stringify(empresaCompleta));
+      alert(`Bem-vindo(a), ${empresaCompleta.nome || empresaCompleta.Nome || email}!`);
+      navigate("/DashboardEmpresa");
     } catch (error) {
       console.error("Erro ao realizar o login:", error);
       alert("Erro ao conectar com o servidor.");
