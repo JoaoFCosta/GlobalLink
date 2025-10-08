@@ -6,8 +6,11 @@ const DashboardEmpresa = () => {
   const [empresaLogada, setEmpresaLogada] = useState(null);
   const [totalOngs, setTotalOngs] = useState(0);
   const [ongs, setOngs] = useState([]);
+  const [needs, setNeeds] = useState([]);
   const [totalNeeds, setTotalNeeds] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedNeeds, setSelectedNeeds] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,6 +66,17 @@ const DashboardEmpresa = () => {
     return <div>Carregando...</div>;
   }
 
+  const handleShowNeeds = () => {
+    // Filtra as necessidades pendentes
+    const pendingNeeds = needs.filter((need) => need.status === "pendente");
+    setSelectedNeeds(pendingNeeds);
+    setShowModal(true); // Abre a modal
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false); // Fecha a modal
+  };
+
   return (
     <>
       <LogedHeader />
@@ -106,7 +120,11 @@ const DashboardEmpresa = () => {
                       </div>
                     </div>
 
-                    <div className="col-12 col-sm-6 col-lg-6">
+                    <div
+                      className="col-12 col-sm-6 col-lg-6"
+                      style={{ cursor: "pointer" }}
+                      onClick={handleShowNeeds}
+                    >
                       <div className="border p-3 p-md-4 rounded-3 bg-white h-100 shadow-sm">
                         <div className="d-flex justify-content-between align-items-center mb-2">
                           <span className="fw-bold fs-6 fs-md-5">
@@ -114,9 +132,10 @@ const DashboardEmpresa = () => {
                           </span>
                           <i className="bi bi-gift text-success fs-4"></i>
                         </div>
-                        <p className="fs-2 fs-md-1 fw-bold text-success mb-1">
-                          {totalNeeds}
-                        </p>
+                        <span className="fs-2 fs-md-1 fw-bold mb-1">
+                          {totalNeeds}{" "}
+                        </span>
+                        <br />
                         <small>Necessidades pendentes</small>
                       </div>
                     </div>
@@ -195,7 +214,7 @@ const DashboardEmpresa = () => {
                               </p>
 
                               <p className="mb-1">
-                              <strong>Caixa Postal:</strong> {ong.ongCep}
+                                <strong>Caixa Postal:</strong> {ong.ongCep}
                               </p>
 
                               <p className="mb-1">
@@ -203,7 +222,6 @@ const DashboardEmpresa = () => {
                               </p>
                             </div>
                           ))
-
                         )}
                       </div>
                     </div>
