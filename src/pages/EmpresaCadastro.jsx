@@ -35,7 +35,7 @@ const EmpresaCadastro = () => {
 
     try {
       const response = await fetch(
-        "https://localhost:7226/api/Auth/CompanyRegister",
+        "https://localhost:5102/api/Auth/CompanyRegister",
         {
           method: "POST",
           headers: {
@@ -45,12 +45,12 @@ const EmpresaCadastro = () => {
             Nome: nome,
             Cnpj: cnpj,
             Email: email,
-            Senha: password, // ⚠️ alterado de password para Senha
+            Senha: password,
             Rua: rua,
             Numero: numero,
             Bairro: bairro,
             Cep: cep,
-            Telefone: tel, // ⚠️ adicionado
+            Telefone: tel,
           }),
         }
       );
