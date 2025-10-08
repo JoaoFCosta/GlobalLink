@@ -1,23 +1,51 @@
 import React, { useEffect, useState } from "react";
 import LogedHeader from "../components/LogedHeader";
 import { Link, useNavigate } from "react-router";
-import Doacoes from "./Doacoes";
 
 const DashboardEmpresa = () => {
-  const [empresaLogada, setEmpresaLogada] = useState("");
+  const [empresaLogada, setEmpresaLogada] = useState(null);
+  const [totalOngs, setTotalOngs] = useState(0);
+  const [ongs, setOngs] = useState([]);
+  const [totalNeeds, setTotalNeeds] = useState(0);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Verifica se há uma empresa logada
-    const empresa = JSON.parse(localStorage.getItem("empresaLogada"));
-
-    if (empresa) {
-      setEmpresaLogada(empresa);
-    } else {
-      // Se não há empresa logada, redireciona para login
-      navigate("/EmpresaLogin");
+    const dados = localStorage.getItem("empresaLogada");
+    if (dados) {
+      setEmpresaLogada(JSON.parse(dados));
     }
-  }, [navigate]);
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:5102/api/Ongs")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao buscar ONGs");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setTotalOngs(data.length);
+        setOngs(data); // adiciona esta linha
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar as ONGs:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:5102/api/Needs")
+      .then((response) => {
+        if (!response.ok) throw new Error("Erro ao buscar necessidades");
+        return response.json();
+      })
+      .then((data) => {
+        setTotalNeeds(data.length); // total de necessidades cadastradas
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleLogout = () => {
     const confirmar = window.confirm("Tem certeza que deseja sair da conta?");
@@ -44,7 +72,7 @@ const DashboardEmpresa = () => {
           <div className="col-12">
             <div className="d-flex justify-content-between align-items-center bg-white p-4 shadow-sm border-1">
               <div>
-                <h3 className="mb-0">Bem-vindo(a), {empresaLogada.nome}!</h3>
+                <h3 className="mb-0">Bem-vindo(a)!</h3>
                 <span>
                   {" "}
                   Encontre ONGs que precisam de ajuda e faça a diferença na sua
@@ -65,7 +93,7 @@ const DashboardEmpresa = () => {
               <div className="col-12">
                 <div className="container-fluid">
                   <div className="row g-3">
-                    <div className="col-12 col-sm-6 col-lg-3">
+                    <div className="col-12 col-sm-6 col-lg-6">
                       <div className="border p-3 p-md-4 rounded-3 bg-white h-100 shadow-sm">
                         <div className="d-flex justify-content-between align-items-center mb-2">
                           <span className="fw-bold fs-6 fs-md-5">
@@ -73,53 +101,23 @@ const DashboardEmpresa = () => {
                           </span>
                           <i className="bi bi-suit-heart text-secondary fs-4"></i>
                         </div>
-                        <p className="fs-2 fs-md-1 fw-bold mb-1">2</p>
+                        <p className="fs-2 fs-md-1 fw-bold mb-1">{totalOngs}</p>
                         <small>Organizações cadastradas</small>
                       </div>
                     </div>
 
-                    <div className="col-12 col-sm-6 col-lg-3">
+                    <div className="col-12 col-sm-6 col-lg-6">
                       <div className="border p-3 p-md-4 rounded-3 bg-white h-100 shadow-sm">
                         <div className="d-flex justify-content-between align-items-center mb-2">
                           <span className="fw-bold fs-6 fs-md-5">
-                            ONGs críticas
-                          </span>
-                          <i className="bi bi-exclamation-triangle text-warning fs-4"></i>
-                        </div>
-                        <p className="fs-2 fs-md-1 fw-bold text-danger mb-1">
-                          1
-                        </p>
-                        <small>Precisam de ajuda urgente</small>
-                      </div>
-                    </div>
-
-                    <div className="col-12 col-sm-6 col-lg-3">
-                      <div className="border p-3 p-md-4 rounded-3 bg-white h-100 shadow-sm">
-                        <div className="d-flex justify-content-between align-items-center mb-2">
-                          <span className="fw-bold fs-6 fs-md-5">
-                            Suas doações
+                            Necessidades
                           </span>
                           <i className="bi bi-gift text-success fs-4"></i>
                         </div>
                         <p className="fs-2 fs-md-1 fw-bold text-success mb-1">
-                          0
+                          {totalNeeds}
                         </p>
-                        <small>Doações realizadas</small>
-                      </div>
-                    </div>
-
-                    <div className="col-12 col-sm-6 col-lg-3">
-                      <div className="border p-3 p-md-4 rounded-3 bg-white h-100 shadow-sm">
-                        <div className="d-flex justify-content-between align-items-center mb-2">
-                          <span className="fw-bold fs-6 fs-md-5">
-                            Impacto social
-                          </span>
-                          <i className="bi bi-people text-primary fs-4"></i>
-                        </div>
-                        <p className="fs-2 fs-md-1 fw-bold text-primary mb-1">
-                          32
-                        </p>
-                        <small>pessoas assistidas no total</small>
+                        <small>Necessidades pendentes</small>
                       </div>
                     </div>
                   </div>
@@ -182,114 +180,31 @@ const DashboardEmpresa = () => {
 
                   <div className="col-12 mt-4 border border-1 p-4 rounded-3">
                     <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between mb-2">
-                      <div>
-                        <span className="fw-bolder fs-3">
-                          Instituto Ajudar{" "}
-                        </span>
-                        <small>🔴</small>
-                        <small className="fw-medium bg-danger text-white p-1 px-2 rounded-pill ms-2">
-                          Crítico
-                        </small>
-                      </div>
-                    </div>
+                      <div className="w-100 row g-2 g-md-3">
+                        {ongs.length === 0 ? (
+                          <p>Nenhuma ONG cadastrada.</p>
+                        ) : (
+                          ongs.map((ong) => (
+                            <div
+                              key={ong.id}
+                              className="bg-white border p-3 rounded-3 mb-3 shadow-sm"
+                            >
+                              <h5 className="fw-bold mb-1">{ong.ongNome}</h5>
+                              <p className="mb-1">
+                                {ong.ongBairro}, {ong.ongRua}, {ong.ongNumero}
+                              </p>
 
-                    <div className="d-flex flex-wrap gap-2 mb-3">
-                      <div className="d-flex align-items-center">
-                        <i className="bi bi-geo-alt me-1"></i>
-                        <small>Centro, São Paulo - 16km</small>
-                      </div>
-                      <div className="d-flex align-items-center">
-                        <i className="bi bi-people me-1"></i>
-                        <small>13 pessoas atendidas</small>
-                      </div>
-                    </div>
+                              <p className="mb-1">
+                              <strong>Caixa Postal:</strong> {ong.ongCep}
+                              </p>
 
-                    <div className="row g-2 g-md-3">
-                      <div className="col-12 col-sm-6 col-lg-4">
-                        <div className="bg-transparent border border-primary p-3 rounded-3 text-center">
-                          <small className="d-block">Água/dia</small>
-                          <span className="fw-bolder fs-5">
-                            <i className="bi bi-droplet me-1"></i>
-                            26L
-                          </span>
-                        </div>
-                      </div>
+                              <p className="mb-1">
+                                <strong>Contato:</strong> {ong.ongTelefone}
+                              </p>
+                            </div>
+                          ))
 
-                      <div className="col-12 col-sm-6 col-lg-4">
-                        <div className="bg-transparent border border-success p-3 rounded-3 text-center">
-                          <small className="d-block">Refeições/dia</small>
-                          <span className="fw-bolder fs-5">
-                            <i className="bi bi-fork-knife me-1"></i>
-                            39
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="col-12 col-sm-6 col-lg-4">
-                        <div className="bg-transparent border border-danger p-3 rounded-3 text-center">
-                          <small className="d-block">Medicamentos/semana</small>
-                          <span className="fw-bolder fs-5">
-                            <i className="bi bi-prescription2 me-1"></i>
-                            26
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-12 mt-4 border border-1 p-4 rounded-3">
-                    <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between mb-2">
-                      <div>
-                        <span className="fw-bolder fs-3">
-                          Instituto São José{" "}
-                        </span>
-                        <small>🟡</small>
-                        <small className="fw-medium bg-warning text-dark p-1 px-2 rounded-pill ms-2">
-                          Atenção
-                        </small>
-                      </div>
-                    </div>
-
-                    <div className="d-flex flex-wrap gap-2 mb-3">
-                      <div className="d-flex align-items-center">
-                        <i className="bi bi-geo-alt me-1"></i>
-                        <small>Centro, São Paulo - 16km</small>
-                      </div>
-                      <div className="d-flex align-items-center">
-                        <i className="bi bi-people me-1"></i>
-                        <small>13 pessoas atendidas</small>
-                      </div>
-                    </div>
-
-                    <div className="row g-2 g-md-3">
-                      <div className="col-12 col-sm-6 col-lg-4">
-                        <div className="bg-transparent border border-primary p-3 rounded-3 text-center">
-                          <small className="d-block">Água/dia</small>
-                          <span className="fw-bolder fs-5">
-                            <i className="bi bi-droplet me-1"></i>
-                            26L
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="col-12 col-sm-6 col-lg-4">
-                        <div className="bg-transparent border border-success p-3 rounded-3 text-center">
-                          <small className="d-block">Refeições/dia</small>
-                          <span className="fw-bolder fs-5">
-                            <i className="bi bi-fork-knife me-1"></i>
-                            39
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="col-12 col-sm-6 col-lg-4">
-                        <div className="bg-transparent border border-danger p-3 rounded-3 text-center">
-                          <small className="d-block">Medicamentos/semana</small>
-                          <span className="fw-bolder fs-5">
-                            <i className="bi bi-prescription2 me-1"></i>
-                            26
-                          </span>
-                        </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -314,10 +229,7 @@ const DashboardEmpresa = () => {
                         fiscais
                       </span>
                       <br />
-                      <small>
-                        Suas doações podem gerar benefícios fiscais através da
-                        Lei Federal 14.258/2021
-                      </small>
+                      <small>Suas doações podem gerar benefícios fiscais</small>
 
                       <Link
                         to="/IncentivoFiscal"

@@ -54,7 +54,7 @@ const IncentivoFiscal = () => {
 
       {/* Seção das 3 Leis - Responsiva */}
       <div className="text-center mx-3 mx-md-5 my-4 my-md-5">
-        <h3 className="mb-4">3 Leis Principais para Doação Empresarial</h3>
+        <h3 className="mb-4">Leis para Doação Empresarial</h3>
 
         <div className="row g-3 g-md-4 justify-content-center">
           <div className="col-12 col-md-6 col-lg-4">
@@ -62,9 +62,12 @@ const IncentivoFiscal = () => {
               <i className="bi bi-suit-heart fs-2 text-danger"></i>
               <p className="fw-medium mb-2">PRONAS/PCD (Saúde)</p>
               <p className="fw-bolder fs-3 text-danger mb-2">1%</p>
-              <small className="d-block mb-3">Até 1% do IR devido</small>
               <p className="mb-3">
-                Ideal para doação de medicamentos e insumos de saúde
+                O doador pode destinar até 1% do seu IR para projetos do
+                Programa Nacional de Apoio à Atenção Oncológica (Pronon) e mais
+                1% para projetos do Programa Nacional de Apoio à Atenção da
+                Saúde da Pessoa com Deficiência (Pronas/PcD) aprovados pelo
+                Ministério da Saúde.
               </p>
               <span className="fw-bolder d-block mb-2">
                 Ideal para a doação de:
@@ -77,33 +80,17 @@ const IncentivoFiscal = () => {
           </div>
 
           <div className="col-12 col-md-6 col-lg-4">
-            <div className="bg-white rounded-3 border border-success p-3 h-100">
-              <i className="bi bi-people fs-2 text-success"></i>
-              <p className="fw-medium mb-2">Fundo do Idoso</p>
-              <p className="fw-bolder fs-3 text-success mb-2">1%</p>
-              <small className="d-block mb-3">Até 1% do IR devido</small>
-              <p className="mb-3">
-                Ideal para doação de alimentos e kits de higiene para abrigos de
-                idosos
-              </p>
-              <span className="fw-bolder d-block mb-2">
-                Ideal para a doação de:
-              </span>
-              <small>
-                Alimentos não perecíveis / Kits de higiene / Fraldas geriátricas
-                / Suplementos alimentares
-              </small>
-            </div>
-          </div>
-
-          <div className="col-12 col-md-6 col-lg-4">
             <div className="bg-white rounded-3 border border-primary p-3 h-100">
               <i className="bi bi-building fs-2 text-primary"></i>
-              <p className="fw-medium mb-2">Fundo da Criança</p>
-              <p className="fw-bolder fs-3 text-primary mb-2">1%</p>
-              <small className="d-block mb-3">Até 1% do IR devido</small>
+              <p className="fw-medium mb-2">
+                Fundo da Criança, do Adolescente ou do Idoso
+              </p>
+              <p className="fw-bolder fs-3 text-primary mb-2">6%</p>
               <p className="mb-3">
-                Ideal para doação de alimentos, roupas e material escolar
+                O doador pode destinar até 6% do IR para os fundos nacional,
+                distrital, estadual e municipal da criança e adolescente ou do
+                idoso, que apoiam projetos para o público prioritário da
+                infância e adolescência ou idoso.
               </p>
               <span className="fw-bolder d-block mb-2">
                 Ideal para a doação de:

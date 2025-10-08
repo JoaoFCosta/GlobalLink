@@ -17,7 +17,7 @@ const EmpresaLogin = () => {
 
     try {
       const response = await fetch(
-        "https://localhost:7226/api/Auth/CompanyLogin",
+        "http://localhost:5102/api/Auth/CompanyLogin",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -28,7 +28,7 @@ const EmpresaLogin = () => {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem("empresaLogada", JSON.stringify(data));
-        alert(`Bem-vindo(a), ${data.nome}!`);
+        alert(`Bem-vindo(a)`);
         navigate("/DashboardEmpresa");
       } else {
         const errorData = await response.json();
