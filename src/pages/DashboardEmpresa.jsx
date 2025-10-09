@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import LogedHeader from "../components/LogedHeader";
 import { Link, useNavigate } from "react-router";
+import { useTheme } from "../contexts/ThemeContext";
 
 const DashboardEmpresa = () => {
   const [empresaLogada, setEmpresaLogada] = useState(null);
@@ -12,6 +13,7 @@ const DashboardEmpresa = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedNeeds, setSelectedNeeds] = useState([]);
   const navigate = useNavigate();
+  const { darkMode } = useTheme();
 
   useEffect(() => {
     const dados = localStorage.getItem("empresaLogada");
@@ -23,14 +25,12 @@ const DashboardEmpresa = () => {
   useEffect(() => {
     fetch("http://localhost:5102/api/Ongs")
       .then((response) => {
-        if (!response.ok) {
-          throw new Error("Erro ao buscar ONGs");
-        }
+        if (!response.ok) throw new Error("Erro ao buscar ONGs");
         return response.json();
       })
       .then((data) => {
         setTotalOngs(data.length);
-        setOngs(data); // adiciona esta linha
+        setOngs(data);
       })
       .catch((error) => {
         console.error("Erro ao buscar as ONGs:", error);
@@ -44,7 +44,8 @@ const DashboardEmpresa = () => {
         return response.json();
       })
       .then((data) => {
-        setTotalNeeds(data.length); // total de necessidades cadastradas
+        setNeeds(data);
+        setTotalNeeds(data.length);
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
@@ -52,30 +53,22 @@ const DashboardEmpresa = () => {
 
   const handleLogout = () => {
     const confirmar = window.confirm("Tem certeza que deseja sair da conta?");
-
     if (confirmar) {
-      // Remove a sessão da empresa
       localStorage.removeItem("empresaLogada");
-
-      // Redireciona para a página inicial
       navigate("/");
     }
   };
 
+  const handleShowNeeds = () => {
+    setSelectedNeeds(needs);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => setShowModal(false);
+
   if (!empresaLogada) {
     return <div>Carregando...</div>;
   }
-
-  const handleShowNeeds = () => {
-    // Filtra as necessidades pendentes
-    const pendingNeeds = needs.filter((need) => need.status === "pendente");
-    setSelectedNeeds(pendingNeeds);
-    setShowModal(true); // Abre a modal
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false); // Fecha a modal
-  };
 
   return (
     <>
@@ -88,7 +81,6 @@ const DashboardEmpresa = () => {
               <div>
                 <h3 className="mb-0">Bem-vindo(a)!</h3>
                 <span>
-                  {" "}
                   Encontre ONGs que precisam de ajuda e faça a diferença na sua
                   comunidade
                 </span>
@@ -103,6 +95,8 @@ const DashboardEmpresa = () => {
                 <span className="d-md-none">Sair</span>
               </button>
             </div>
+
+            {/* Métricas */}
             <div className="row mt-4">
               <div className="col-12">
                 <div className="container-fluid">
@@ -133,16 +127,19 @@ const DashboardEmpresa = () => {
                           <i className="bi bi-gift text-success fs-4"></i>
                         </div>
                         <span className="fs-2 fs-md-1 fw-bold mb-1">
-                          {totalNeeds}{" "}
+                          {totalNeeds}
                         </span>
                         <br />
                         <small>Necessidades pendentes</small>
+                        <br />
+                        <small>(Clique para ver as necessidades)</small>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
+              {/* ONGs */}
               <div className="col-12 mt-4">
                 <div className="border border-1 border-primary rounded-3 p-3 p-md-4 bg-white">
                   <div className="row align-items-center g-3">
@@ -184,6 +181,7 @@ const DashboardEmpresa = () => {
                 </div>
               </div>
 
+              {/* Lista de ONGs */}
               <div className="col-12 mt-4">
                 <div className="bg-white border border-1 border-white p-3 rounded-3">
                   <span>
@@ -228,6 +226,77 @@ const DashboardEmpresa = () => {
                   </div>
                 </div>
 
+                {/* Modal de Necessidades (Tema Dark) */}
+                {showModal && (
+                  <div
+                    className="modal fade show d-block"
+                    style={{ backgroundColor: darkMode ? "rgba(0,0,0,0.7)" : "rgba(0,0,0,0.35)" }}
+                    tabIndex="-1"
+                  >
+                    <div className="modal-dialog modal-dialog-centered modal-lg">
+                      <div
+                        className={`modal-content shadow-lg ${darkMode ? "bg-dark text-light border-secondary" : "bg-white text-dark border-light"}`}
+                        style={{ borderWidth: 1 }}
+                      >
+                        <div className={`modal-header ${darkMode ? "border-secondary" : "border-light"}`}>
+                          <h5 className={`modal-title ${darkMode ? "text-light" : "text-primary"}`}>
+                            Necessidades das ONGs
+                          </h5>
+                          <button
+                            type="button"
+                            // Use proper close button style depending on theme
+                            className={darkMode ? "btn-close btn-close-white" : "btn-close"}
+                            onClick={handleCloseModal}
+                          ></button>
+                        </div>
+
+                        <div className="modal-body">
+                          {loading ? (
+                            <p className={`text-center ${darkMode ? "text-muted" : "text-muted"}`}>
+                              Carregando...
+                            </p>
+                          ) : selectedNeeds.length === 0 ? (
+                            <p className={`text-center ${darkMode ? "text-muted" : "text-muted"}`}>
+                              Nenhuma necessidade cadastrada.
+                            </p>
+                          ) : (
+                            <div className="list-group">
+                              {selectedNeeds.map((need) => (
+                                <div
+                                  key={need.id || need.necessidadeTitulo}
+                                  className={`list-group-item list-group-item-action flex-column align-items-start mb-3 rounded-3 ${darkMode ? "bg-secondary bg-opacity-10 border-secondary text-light" : "bg-secondary bg-opacity-25 border-secondary text-dark"}`}
+                                >
+                                  <div className="d-flex w-100 justify-content-between">
+                                    <h6 className={`mb-1 fw-bold ${darkMode ? "text-light" : "text-primary"}`}>
+                                      {need.necessidadeTitulo || "Sem título"}
+                                    </h6>
+                                    <small className={`${darkMode ? "text-light" : "text-muted"}`}>
+                                      ONG: {need.ongNome || "Desconhecida"}
+                                    </small>
+                                  </div>
+                                  <p className={`${darkMode ? "mb-1 text-light" : "mb-1 text-dark"}`}>
+                                    {need.necessidadeDescricao || "Sem descrição."}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className={`modal-footer ${darkMode ? "border-secondary" : "border-light"}`}>
+                          <button
+                            className={darkMode ? "btn btn-outline-light" : "btn btn-outline-secondary"}
+                            onClick={handleCloseModal}
+                          >
+                            Fechar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* HISTÓRICO */}
                 <div className="bg-white mt-4 p-3 p-md-4 rounded-3 border">
                   <div className="mb-3">
                     <span className="fw-bolder fs-5">
@@ -239,6 +308,7 @@ const DashboardEmpresa = () => {
                   </div>
                 </div>
 
+                {/* INCENTIVOS */}
                 <div className="bg-white mt-4 p-3 p-md-4 mb-5 rounded-3 border">
                   <div className="row align-items-center">
                     <div className="col-12 col-md-8">

@@ -18,7 +18,6 @@ const EmpresaLogin = () => {
     try {
       const response = await fetch(
         "http://localhost:5102/api/Auth/CompanyLogin",
-        "http://localhost:5102/api/Auth/CompanyLogin",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -55,7 +54,10 @@ const EmpresaLogin = () => {
           const res = await fetch(companyByIdUrl, {
             method: "GET",
             headers: token
-              ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
+              ? {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                }
               : { "Content-Type": "application/json" },
           });
 
@@ -69,14 +71,21 @@ const EmpresaLogin = () => {
           const companiesRes = await fetch(companiesUrl, {
             method: "GET",
             headers: token
-              ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
+              ? {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                }
               : { "Content-Type": "application/json" },
           });
 
           if (companiesRes.ok) {
             const companies = await companiesRes.json();
-            const found = (Array.isArray(companies) ? companies : [])
-              .find((c) => c.email && authData.email && c.email.toLowerCase() === authData.email.toLowerCase());
+            const found = (Array.isArray(companies) ? companies : []).find(
+              (c) =>
+                c.email &&
+                authData.email &&
+                c.email.toLowerCase() === authData.email.toLowerCase()
+            );
 
             if (found) {
               empresaCompleta = found;
@@ -84,12 +93,19 @@ const EmpresaLogin = () => {
           }
         }
       } catch (err) {
-        console.warn("Não foi possível buscar dados completos da empresa:", err);
+        console.warn(
+          "Não foi possível buscar dados completos da empresa:",
+          err
+        );
       }
 
       // Salva o objeto completo (ou pelo menos o retorno do login)
       localStorage.setItem("empresaLogada", JSON.stringify(empresaCompleta));
-      alert(`Bem-vindo(a), ${empresaCompleta.nome || empresaCompleta.Nome || email}!`);
+      alert(
+        `Bem-vindo(a), ${
+          empresaCompleta.nome || empresaCompleta.Nome || email
+        }!`
+      );
       navigate("/DashboardEmpresa");
     } catch (error) {
       console.error("Erro ao realizar o login:", error);
