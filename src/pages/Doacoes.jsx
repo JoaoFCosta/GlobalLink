@@ -4,49 +4,41 @@ import { Link } from "react-router";
 import { useTheme } from "../contexts/ThemeContext";
 
 const Doacoes = () => {
-  const [empresaLogada, setEmpresaLogada] = useState(null);
-  const [totalOngs, setTotalOngs] = useState(0);
+  const [necessidades, setNecessidades] = useState([]);
   const [doacoes, setDoacoes] = useState([]);
+  const [totalOngs, setTotalOngs] = useState(0);
   const [totalDoacoes, setTotalDoacoes] = useState(0);
   const [loading, setLoading] = useState(true);
-
+  const [feedback, setFeedback] = useState(null);
+  const [enviando, setEnviando] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const { darkMode } = useTheme();
 
-  // 🔹 Novo estado: dados da nova doação
-  const [novaDoacao, setNovaDoacao] = useState({
-    empresaId: 0,
+  const dadosIniciais = {
     ongId: 0,
+    empresaId: 0,
     tipo: "",
     observacoes: "",
     status: "Pendente",
-    empresaNome: "",
     ongNome: "",
-  });
+  };
 
-  // 🔹 Carregar empresa logada
-  useEffect(() => {
-    const dados = localStorage.getItem("empresaLogada");
-    if (dados) {
-      const empresa = JSON.parse(dados);
-      setEmpresaLogada(empresa);
-      setNovaDoacao((prev) => ({
-        ...prev,
-        empresaId: empresa.id,
-        empresaNome: empresa.nome,
-      }));
-    }
-  }, []);
+  // Estado da nova doação
+  const [novaDoacao, setNovaDoacao] = useState(dadosIniciais);
 
-  // 🔹 Buscar ONGs e doações
+  // Buscar ONGs
   useEffect(() => {
     fetch("http://localhost:5102/api/Ongs")
       .then((res) => res.json())
-      .then((data) => setTotalOngs(Array.isArray(data) ? data.length : 0))
+      .then((data) => {
+        setNecessidades(data);
+        setTotalOngs(Array.isArray(data) ? data.length : 0);
+      })
       .catch((err) => console.error("Erro ao buscar ONGs:", err));
   }, []);
 
+  // Buscar doações
   useEffect(() => {
     carregarDoacoes();
   }, []);
@@ -54,10 +46,7 @@ const Doacoes = () => {
   const carregarDoacoes = () => {
     setLoading(true);
     fetch("http://localhost:5102/api/Donates")
-      .then((response) => {
-        if (!response.ok) throw new Error("Erro ao buscar doações");
-        return response.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
         setDoacoes(data);
         setTotalDoacoes(data.length || 0);
@@ -69,46 +58,89 @@ const Doacoes = () => {
       .finally(() => setLoading(false));
   };
 
-  // 🔹 POST - Cadastrar nova doação
-  const cadastrarDoacao = async () => {
-    if (!novaDoacao.tipo.trim() || !novaDoacao.ongId) {
-      alert("Preencha todos os campos obrigatórios!");
-      return;
-    }
+  // Função para atualizar o estado quando os inputs mudam
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNovaDoacao((prevState) => ({
+      ...prevState,
+      [name]: name === "ongId" ? parseInt(value) : value,
+    }));
+  };
+
+  // Função que lida com o envio do formulário
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const url = "http://localhost:5102/api/Donates";
+
+    setEnviando(true);
+    setFeedback(null);
+
+    const payload = {
+      ongId: novaDoacao.ongId,
+      empresaId: novaDoacao.empresaId,
+      tipo: novaDoacao.tipo,
+      observacoes: novaDoacao.observacoes,
+      status: novaDoacao.status,
+    };
 
     try {
-      const response = await fetch("http://localhost:5102/api/Donates", {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
+          // "Authorization": `Bearer ${token}` // se usar JWT
         },
-        body: JSON.stringify(novaDoacao),
+        body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error("Erro ao cadastrar doação");
+      // Se a requisição foi bem-sucedida
+      if (response.ok) {
+        const dadosResposta = await response.json();
 
-      const data = await response.json();
-      setDoacoes((prev) => [...prev, data]);
-      setTotalDoacoes((prev) => prev + 1);
-      setNovaDoacao({
-        ...novaDoacao,
-        tipo: "",
-        observacoes: "",
-        ongId: 0,
-        ongNome: "",
+        console.log("✅ Doação criada:", dadosResposta);
+
+        setFeedback({
+          type: "success",
+          message: `Doação cadastrada com sucesso! ID: ${dadosResposta.id}`,
+        });
+
+        // Limpa o formulário
+        setNovaDoacao(dadosIniciais);
+        return;
+      }
+
+      // Se houve erro HTTP (4xx ou 5xx)
+      let mensagemErro = `Erro HTTP ${response.status}: ${response.statusText}`;
+
+      try {
+        const erroData = await response.json();
+        if (erroData) {
+          mensagemErro =
+            erroData.title ||
+            erroData.message ||
+            erroData.error ||
+            JSON.stringify(erroData);
+        }
+      } catch {
+        console.warn("⚠️ Resposta de erro não era JSON.");
+      }
+
+      throw new Error(mensagemErro);
+    } catch (error) {
+      console.error("❌ Erro ao enviar a doação:", error);
+
+      setFeedback({
+        type: "danger",
+        message: `Falha no envio: ${error.message}. Verifique sua conexão ou os dados.`,
       });
-      alert("Doação cadastrada com sucesso!");
-    } catch (err) {
-      console.error("Erro no envio da doação:", err);
-      alert("Falha ao cadastrar doação.");
+    } finally {
+      setEnviando(false);
     }
   };
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
-
-  if (!empresaLogada) return <div>Carregando...</div>;
 
   return (
     <>
@@ -252,63 +284,115 @@ const Doacoes = () => {
         </div>
 
         {/* FORMULÁRIO DE NOVA DOAÇÃO */}
-        <div className="mt-5">
-          <h2>Fazer nova doação</h2>
-          <div className="p-4 border rounded-3 shadow-sm bg-white">
-            <div className="row g-3">
-              <div className="col-md-6">
-                <label className="form-label">Tipo de doação</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={novaDoacao.tipo}
-                  onChange={(e) =>
-                    setNovaDoacao({ ...novaDoacao, tipo: e.target.value })
-                  }
-                  placeholder="Ex: Alimentos, roupas..."
-                />
-              </div>
-              <div className="col-md-6">
-                <label className="form-label">ID da ONG</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  value={novaDoacao.ongId}
-                  onChange={(e) =>
-                    setNovaDoacao({
-                      ...novaDoacao,
-                      ongId: parseInt(e.target.value) || 0,
-                    })
-                  }
-                  placeholder="Ex: 1"
-                />
-              </div>
-              <div className="col-12">
-                <label className="form-label">Observações</label>
-                <textarea
-                  className="form-control"
-                  rows="3"
-                  value={novaDoacao.observacoes}
-                  onChange={(e) =>
-                    setNovaDoacao({
-                      ...novaDoacao,
-                      observacoes: e.target.value,
-                    })
-                  }
-                  placeholder="Detalhes da doação..."
-                />
-              </div>
-              <div className="col-12">
-                <button
-                  className="btn btn-success w-100"
-                  onClick={cadastrarDoacao}
-                >
-                  Enviar doação
-                </button>
-              </div>
-            </div>
+        <form
+          onSubmit={handleSubmit}
+          className="container mt-5 mb-5 d-flex row "
+        >
+          {/* Campo ONG ID */}
+          <div className="col-6 col-md-6 mb-3">
+            <label htmlFor="ongIdInput" className="form-label">
+              Código da ONG
+            </label>
+            <input
+              type="number"
+              className="form-control" // form-control é essencial para input
+              id="ongIdInput"
+              name="ongId"
+              value={novaDoacao.ongId}
+              onChange={handleInputChange}
+              required
+              min="1" // Sugestão: IDs de FKs válidos geralmente são maiores que 0
+            />
           </div>
-        </div>
+
+          {/* Campo EMPRESA ID */}
+          <div className="col-6 col-md-6 mb-3">
+            <label htmlFor="empresaIdInput" className="form-label">
+              Código da Empresa
+            </label>
+            <input
+              type="number"
+              className="form-control"
+              id="empresaIdInput"
+              name="empresaId"
+              value={novaDoacao.empresaId}
+              onChange={handleInputChange}
+              required
+              min="1"
+            />
+          </div>
+
+          {/* Campo TIPO */}
+          <div className="col-6 col-md-6 mb-3">
+            <label htmlFor="tipoInput" className="form-label">
+              Tipo da Doação
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="tipoInput"
+              name="tipo"
+              value={novaDoacao.tipo}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          {/* Campo STATUS (Select) */}
+          <div className="col-6 col-md-6 mb-3">
+            <label htmlFor="statusSelect" className="form-label">
+              Status
+            </label>
+            <select
+              className="form-select" // form-select é a classe para select
+              id="statusSelect"
+              name="status"
+              value={novaDoacao.status}
+              onChange={handleInputChange}
+            >
+              <option value="Pendente">Pendente</option>
+              <option value="Em Andamento">Em Andamento</option>
+              <option value="Concluído">Concluído</option>
+              {/* Adicione outros status conforme seu C# */}
+            </select>
+          </div>
+
+          {/* Campo OBSERVAÇÕES (Textarea) */}
+          <div className="mb-3">
+            <label htmlFor="observacoesInput" className="form-label">
+              Observações
+            </label>
+            <textarea
+              className="form-control"
+              id="observacoesInput"
+              name="observacoes"
+              value={novaDoacao.observacoes}
+              onChange={handleInputChange}
+              rows="3"
+            />
+          </div>
+
+          {/* Botão de Envio */}
+          <button
+            type="submit"
+            className="btn btn-primary" // Botão primário azul
+            disabled={enviando}
+          >
+            {enviando ? (
+              // Spinner de carregamento do Bootstrap
+              <>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Enviando...
+              </>
+            ) : (
+              "Cadastrar Doação"
+            )}
+          </button>
+        </form>
       </div>
     </>
   );
