@@ -13,6 +13,13 @@ const Doacoes = () => {
   const [enviando, setEnviando] = useState(false);
   const [showModalDoacoes, setShowModalDoacoes] = useState(false);
   const [showModalOngs, setShowModalOngs] = useState(false);
+  const [doacaoEditando, setDoacaoEditando] = useState(null);
+  const [editando, setEditando] = useState(null);
+  const [dadosEdicao, setDadosEdicao] = useState({
+    tipo: "",
+    observacoes: "",
+    status: "",
+  });
 
   const { darkMode } = useTheme();
 
@@ -76,6 +83,75 @@ const Doacoes = () => {
     carregarOngs();
     carregarDoacoes();
   }, []);
+
+  // PUT - Atualizar doação (função não utilizada na UI atual)
+  const atualizarDoacao = async (id, dadosAtualizados) => {
+    setEnviando(true);
+    setFeedback(null);
+
+    try {
+      const response = await fetch(`http://localhost:5102/api/Donates/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: id,
+          ongId: dadosAtualizados.ongId,
+          empresaId: dadosAtualizados.empresaId,
+          tipo: dadosAtualizados.tipo,
+          observacoes: dadosAtualizados.observacoes,
+          status: dadosAtualizados.status,
+        }),
+      });
+
+      if (!response.ok) {
+        const erroData = await response.json().catch(() => ({}));
+        throw new Error(
+          erroData.title || erroData.message || "Erro ao atualizar."
+        );
+      }
+
+      setFeedback({
+        type: "success",
+        message: `Doação ID ${id} atualizada com sucesso!`,
+      });
+      carregarDoacoes(); // Atualiza a lista
+    } catch (error) {
+      setFeedback({ type: "danger", message: error.message });
+    } finally {
+      setEnviando(false);
+    }
+  };
+  
+  // Abre o modo de edição
+  const iniciarEdicao = (doacao) => {
+    setEditando(doacao.id);
+    setDadosEdicao({
+      tipo: doacao.tipo,
+      observacoes: doacao.observacoes,
+      status: doacao.status,
+    });
+  };
+
+  // Cancela o modo de edição
+  const cancelarEdicao = () => {
+    setEditando(null);
+    setDadosEdicao({ tipo: "", observacoes: "", status: "" });
+  };
+
+  // Atualiza os campos do formulário de edição
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setDadosEdicao((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Envia a atualização
+  const salvarEdicao = async (id) => {
+    await atualizarDoacao(id, {
+      ...doacoes.find((d) => d.id === id),
+      ...dadosEdicao,
+    });
+    cancelarEdicao();
+  };
 
   // === FORM ===
   const handleInputChange = (e) => {
@@ -347,18 +423,94 @@ const Doacoes = () => {
                                 : "bg-light text-dark"
                             }`}
                           >
-                            <div className="d-flex w-100 justify-content-between">
-                              <h6 className="mb-1 fw-bold text-success">
-                                {doacao.tipo}
-                              </h6>
-                              <small>Status: {doacao.status}</small>
-                            </div>
-                            <p className="mb-1">
-                              <strong>ONG:</strong> {doacao.ongNome}
-                            </p>
-                            <p className="mb-1">
-                              <strong>OBS:</strong> {doacao.observacoes}
-                            </p>
+                            {/* Se está editando essa doação */}
+                            {editando === doacao.id ? (
+                              <>
+                                <h6 className="fw-bold text-primary mb-2">
+                                  Editar Doação #{doacao.id}
+                                </h6>
+
+                                <div className="mb-2">
+                                  <label className="form-label">Tipo</label>
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    name="tipo"
+                                    value={dadosEdicao.tipo}
+                                    onChange={handleEditChange}
+                                  />
+                                </div>
+
+                                <div className="mb-2">
+                                  <label className="form-label">
+                                    Observações
+                                  </label>
+                                  <textarea
+                                    className="form-control"
+                                    name="observacoes"
+                                    value={dadosEdicao.observacoes}
+                                    onChange={handleEditChange}
+                                    rows="2"
+                                  />
+                                </div>
+
+                                <div className="mb-2">
+                                  <label className="form-label">Status</label>
+                                  <select
+                                    className="form-select"
+                                    name="status"
+                                    value={dadosEdicao.status}
+                                    onChange={handleEditChange}
+                                  >
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Em Andamento">
+                                      Em Andamento
+                                    </option>
+                                    <option value="Concluído">Concluído</option>
+                                  </select>
+                                </div>
+
+                                <div className="d-flex justify-content-end gap-2">
+                                  <button
+                                    className="btn btn-success btn-sm"
+                                    onClick={() => salvarEdicao(doacao.id)}
+                                  >
+                                    Salvar
+                                  </button>
+                                  <button
+                                    className="btn btn-outline-secondary btn-sm"
+                                    onClick={cancelarEdicao}
+                                  >
+                                    Cancelar
+                                  </button>
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <div className="d-flex w-100 justify-content-between">
+                                  <h6 className="mb-1 fw-bold text-success">
+                                    {doacao.tipo}
+                                  </h6>
+                                  <div>
+                                    <small className="text-muted me-3">
+                                      Status: {doacao.status}
+                                    </small>
+                                    <button
+                                      className="btn btn-outline-primary btn-sm"
+                                      onClick={() => iniciarEdicao(doacao)}
+                                    >
+                                      <i className="bi bi-pencil"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                                <p className="mb-1">
+                                  <strong>ONG:</strong> {doacao.ongNome}
+                                </p>
+                                <p className="mb-1">
+                                  <strong>OBS:</strong> {doacao.observacoes}
+                                </p>
+                              </>
+                            )}
                           </div>
                         ))}
                       </div>
