@@ -121,7 +121,7 @@ const Doacoes = () => {
       setEnviando(false);
     }
   };
-  
+
   // Abre o modo de edição
   const iniciarEdicao = (doacao) => {
     setEditando(doacao.id);
@@ -220,6 +220,38 @@ const Doacoes = () => {
         type: "danger",
         message: `Falha no envio: ${error.message}. Verifique sua conexão ou os dados.`,
       });
+    } finally {
+      setEnviando(false);
+    }
+  };
+
+  // Delete - Remover doação
+  const deletarDoacao = async (id) => {
+    if (!window.confirm("Tem certeza que deseja excluir esta doação?")) return;
+
+    setEnviando(true);
+    setFeedback(null);
+
+    try {
+      const response = await fetch(`http://localhost:5102/api/Donates/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const erroData = await response.json().catch(() => ({}));
+        throw new Error(
+          erroData.title || erroData.message || "Erro ao deletar a doação."
+        );
+      }
+
+      setFeedback({
+        type: "success",
+        message: `Doação ID ${id} excluída com sucesso!`,
+      });
+
+      carregarDoacoes(); // Atualiza a lista
+    } catch (error) {
+      setFeedback({ type: "danger", message: error.message });
     } finally {
       setEnviando(false);
     }
@@ -423,7 +455,7 @@ const Doacoes = () => {
                                 : "bg-light text-dark"
                             }`}
                           >
-                            {/* Se está editando essa doação */}
+                            {/* Modo edição */}
                             {editando === doacao.id ? (
                               <>
                                 <h6 className="fw-bold text-primary mb-2">
@@ -487,7 +519,8 @@ const Doacoes = () => {
                               </>
                             ) : (
                               <>
-                                <div className="d-flex w-100 justify-content-between">
+                                {/* Modo visualização */}
+                                <div className="d-flex w-100 justify-content-between align-items-center">
                                   <h6 className="mb-1 fw-bold text-success">
                                     {doacao.tipo}
                                   </h6>
@@ -495,11 +528,21 @@ const Doacoes = () => {
                                     <small className="text-muted me-3">
                                       Status: {doacao.status}
                                     </small>
+
+                                    {/* Botão editar */}
                                     <button
-                                      className="btn btn-outline-primary btn-sm"
+                                      className="btn btn-outline-primary btn-sm me-2"
                                       onClick={() => iniciarEdicao(doacao)}
                                     >
                                       <i className="bi bi-pencil"></i>
+                                    </button>
+
+                                    {/* Botão deletar */}
+                                    <button
+                                      className="btn btn-outline-danger btn-sm"
+                                      onClick={() => deletarDoacao(doacao.id)}
+                                    >
+                                      <i className="bi bi-trash"></i>
                                     </button>
                                   </div>
                                 </div>
