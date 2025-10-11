@@ -11,7 +11,8 @@ const Doacoes = () => {
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
   const [enviando, setEnviando] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showModalDoacoes, setShowModalDoacoes] = useState(false);
+  const [showModalOngs, setShowModalOngs] = useState(false);
 
   const { darkMode } = useTheme();
 
@@ -24,41 +25,59 @@ const Doacoes = () => {
     ongNome: "",
   };
 
-  // Estado da nova doação
   const [novaDoacao, setNovaDoacao] = useState(dadosIniciais);
 
-  // Buscar ONGs
-  useEffect(() => {
-    fetch("http://localhost:5102/api/Ongs")
-      .then((res) => res.json())
-      .then((data) => {
-        setNecessidades(data);
-        setTotalOngs(Array.isArray(data) ? data.length : 0);
-      })
-      .catch((err) => console.error("Erro ao buscar ONGs:", err));
-  }, []);
+  // === BUSCAR ONGs ===
+  const carregarOngs = async () => {
+    setLoading(true);
 
-  // Buscar doações
+    try {
+      const response = await fetch("http://localhost:5102/api/Ongs");
+      if (!response.ok)
+        throw new Error(`Erro HTTP ${response.status}: ${response.statusText}`);
+
+      const data = await response.json();
+      setNecessidades(data);
+      setTotalOngs(Array.isArray(data) ? data.length : 0);
+      console.log("✅ ONGs carregadas:", data);
+    } catch (err) {
+      console.error("❌ Erro ao buscar ONGs:", err);
+      setTotalOngs(0);
+      setNecessidades([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // === BUSCAR DOAÇÕES ===
+  const carregarDoacoes = async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:5102/api/Donates");
+      if (!response.ok)
+        throw new Error(`Erro HTTP ${response.status}: ${response.statusText}`);
+
+      const data = await response.json();
+      setDoacoes(data);
+      setTotalDoacoes(Array.isArray(data) ? data.length : 0);
+      console.log("✅ Doações carregadas:", data);
+    } catch (err) {
+      console.error("❌ Erro ao buscar doações:", err);
+      setTotalDoacoes(0);
+      setDoacoes([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // === EFFECTS ===
   useEffect(() => {
+    carregarOngs();
     carregarDoacoes();
   }, []);
 
-  const carregarDoacoes = () => {
-    setLoading(true);
-    fetch("http://localhost:5102/api/Donates")
-      .then((res) => res.json())
-      .then((data) => {
-        setDoacoes(data);
-        setTotalDoacoes(data.length || 0);
-      })
-      .catch((err) => {
-        console.error("Erro ao buscar doações:", err);
-        setTotalDoacoes(0);
-      })
-      .finally(() => setLoading(false));
-  };
-
-  // Função para atualizar o estado quando os inputs mudam
+  // === FORM ===
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNovaDoacao((prevState) => ({
@@ -67,12 +86,10 @@ const Doacoes = () => {
     }));
   };
 
-  // Função que lida com o envio do formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const url = "http://localhost:5102/api/Donates";
-
     setEnviando(true);
     setFeedback(null);
 
@@ -89,15 +106,12 @@ const Doacoes = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // "Authorization": `Bearer ${token}` // se usar JWT
         },
         body: JSON.stringify(payload),
       });
 
-      // Se a requisição foi bem-sucedida
       if (response.ok) {
         const dadosResposta = await response.json();
-
         console.log("✅ Doação criada:", dadosResposta);
 
         setFeedback({
@@ -105,14 +119,12 @@ const Doacoes = () => {
           message: `Doação cadastrada com sucesso! ID: ${dadosResposta.id}`,
         });
 
-        // Limpa o formulário
         setNovaDoacao(dadosIniciais);
+        carregarDoacoes(); // Atualiza lista
         return;
       }
 
-      // Se houve erro HTTP (4xx ou 5xx)
       let mensagemErro = `Erro HTTP ${response.status}: ${response.statusText}`;
-
       try {
         const erroData = await response.json();
         if (erroData) {
@@ -125,11 +137,9 @@ const Doacoes = () => {
       } catch {
         console.warn("⚠️ Resposta de erro não era JSON.");
       }
-
       throw new Error(mensagemErro);
     } catch (error) {
       console.error("❌ Erro ao enviar a doação:", error);
-
       setFeedback({
         type: "danger",
         message: `Falha no envio: ${error.message}. Verifique sua conexão ou os dados.`,
@@ -138,9 +148,6 @@ const Doacoes = () => {
       setEnviando(false);
     }
   };
-
-  const handleShowModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
 
   return (
     <>
@@ -155,14 +162,18 @@ const Doacoes = () => {
         <h1>Oportunidades de doação</h1>
         <span>Encontre ONGs que precisam de ajuda e faça a diferença</span>
 
-        {/* Cards de resumo */}
+        {/* === CARDS DE RESUMO === */}
         <div className="justify-content-center text-center mt-5">
           <div className="d-flex flex-column flex-lg-row justify-content-center gap-3 gap-lg-5">
             <div className="col-12">
               <div className="container-fluid">
                 <div className="row g-3">
-                  {/* ONGs */}
-                  <div className="col-12 col-sm-6 col-lg-6">
+                  {/* === ONGs === */}
+                  <div
+                    className="col-12 col-sm-6 col-lg-6"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setShowModalOngs(true)}
+                  >
                     <div className="border p-4 rounded-3 bg-white h-100 shadow-sm">
                       <div className="d-flex justify-content-between align-items-center mb-2">
                         <span className="fw-bold">ONGs disponíveis</span>
@@ -170,14 +181,16 @@ const Doacoes = () => {
                       </div>
                       <p className="fs-2 fw-bold mb-1">{totalOngs}</p>
                       <small>Organizações cadastradas</small>
+                      <br />
+                      <small>(Clique para ver detalhes)</small>
                     </div>
                   </div>
 
-                  {/* Doações */}
+                  {/* === DOAÇÕES === */}
                   <div
                     className="col-12 col-sm-6 col-lg-6"
                     style={{ cursor: "pointer" }}
-                    onClick={handleShowModal}
+                    onClick={() => setShowModalDoacoes(true)}
                   >
                     <div className="border p-4 rounded-3 bg-white h-100 shadow-sm">
                       <div className="d-flex justify-content-between align-items-center mb-2">
@@ -197,8 +210,95 @@ const Doacoes = () => {
             </div>
           </div>
 
-          {/* MODAL DE DOAÇÕES */}
-          {showModal && (
+          {/* === MODAL ONGS === */}
+          {showModalOngs && (
+            <div
+              className="modal fade show d-block"
+              style={{
+                backgroundColor: darkMode
+                  ? "rgba(0,0,0,0.7)"
+                  : "rgba(0,0,0,0.35)",
+              }}
+              tabIndex="-1"
+            >
+              <div className="modal-dialog modal-dialog-centered modal-lg">
+                <div
+                  className={`modal-content shadow-lg border rounded-4 ${
+                    darkMode
+                      ? "bg-dark text-light border-secondary"
+                      : "bg-white text-dark border-light"
+                  }`}
+                >
+                  <div className="modal-header border-0">
+                    <h5 className="modal-title text-secondary fw-bold">
+                      ONGs Cadastradas
+                    </h5>
+                    <button
+                      type="button"
+                      className={
+                        darkMode ? "btn-close btn-close-white" : "btn-close"
+                      }
+                      onClick={() => setShowModalOngs(false)}
+                    ></button>
+                  </div>
+
+                  <div className="modal-body">
+                    {loading ? (
+                      <p className="text-center text-muted">Carregando...</p>
+                    ) : necessidades.length === 0 ? (
+                      <p className="text-center text-muted">
+                        Nenhuma ONG encontrada.
+                      </p>
+                    ) : (
+                      <div className="list-group text-start">
+                        {necessidades.map((ong) => (
+                          <div
+                            key={ong.id}
+                            className={`list-group-item mb-2 rounded-3 border ${
+                              darkMode
+                                ? "bg-secondary bg-opacity-10 text-light"
+                                : "bg-light text-dark"
+                            }`}
+                          >
+                            <h6 className="fw-bold text-secondary mb-1">
+                              {ong.ongNome}
+                            </h6>
+                            <h6 className="mb-1">
+                              <strong>Código da ONG:</strong> {ong.ongId}
+                            </h6>
+                            <p className="mb-1">
+                              <strong>Local: </strong>
+                              {ong.ongBairro}, {ong.ongRua}, {ong.ongNumero}
+                            </p>
+                            <p className="mb-1">
+                              <strong>Contato:</strong> {ong.ongTelefone}
+                            </p>
+                            <p className="mb-1">
+                              <strong>Caixa postal:</strong> {ong.ongCep}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="modal-footer border-0">
+                    <button
+                      className={`btn ${
+                        darkMode ? "btn-outline-light" : "btn-outline-secondary"
+                      }`}
+                      onClick={() => setShowModalOngs(false)}
+                    >
+                      Fechar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* === MODAL DOAÇÕES === */}
+          {showModalDoacoes && (
             <div
               className="modal fade show d-block"
               style={{
@@ -225,7 +325,7 @@ const Doacoes = () => {
                       className={
                         darkMode ? "btn-close btn-close-white" : "btn-close"
                       }
-                      onClick={handleCloseModal}
+                      onClick={() => setShowModalDoacoes(false)}
                     ></button>
                   </div>
 
@@ -237,7 +337,7 @@ const Doacoes = () => {
                         Nenhuma doação encontrada.
                       </p>
                     ) : (
-                      <div className="list-group">
+                      <div className="list-group text-start">
                         {doacoes.map((doacao) => (
                           <div
                             key={doacao.id}
@@ -251,9 +351,7 @@ const Doacoes = () => {
                               <h6 className="mb-1 fw-bold text-success">
                                 {doacao.tipo}
                               </h6>
-                              <small className="text-muted">
-                                Status: {doacao.status}
-                              </small>
+                              <small>Status: {doacao.status}</small>
                             </div>
                             <p className="mb-1">
                               <strong>ONG:</strong> {doacao.ongNome}
@@ -272,7 +370,7 @@ const Doacoes = () => {
                       className={`btn ${
                         darkMode ? "btn-outline-light" : "btn-outline-secondary"
                       }`}
-                      onClick={handleCloseModal}
+                      onClick={() => setShowModalDoacoes(false)}
                     >
                       Fechar
                     </button>
@@ -283,36 +381,35 @@ const Doacoes = () => {
           )}
         </div>
 
-        {/* FORMULÁRIO DE NOVA DOAÇÃO */}
+        {/* === FORMULÁRIO DE NOVA DOAÇÃO === */}
         <form
           onSubmit={handleSubmit}
-          className="container mt-5 mb-5 d-flex row "
+          className="container mt-5 mb-5 d-flex row"
         >
-          {/* Campo ONG ID */}
+          {/* Campos do formulário */}
           <div className="col-6 col-md-6 mb-3">
             <label htmlFor="ongIdInput" className="form-label">
               Código da ONG
             </label>
             <input
               type="number"
-              className="form-control" // form-control é essencial para input
+              className="form-control shadow-sm"
               id="ongIdInput"
               name="ongId"
               value={novaDoacao.ongId}
               onChange={handleInputChange}
               required
-              min="1" // Sugestão: IDs de FKs válidos geralmente são maiores que 0
+              min="1"
             />
           </div>
 
-          {/* Campo EMPRESA ID */}
           <div className="col-6 col-md-6 mb-3">
             <label htmlFor="empresaIdInput" className="form-label">
               Código da Empresa
             </label>
             <input
               type="number"
-              className="form-control"
+              className="form-control shadow-sm"
               id="empresaIdInput"
               name="empresaId"
               value={novaDoacao.empresaId}
@@ -322,14 +419,13 @@ const Doacoes = () => {
             />
           </div>
 
-          {/* Campo TIPO */}
           <div className="col-6 col-md-6 mb-3">
             <label htmlFor="tipoInput" className="form-label">
               Tipo da Doação
             </label>
             <input
               type="text"
-              className="form-control"
+              className="form-control shadow-sm"
               id="tipoInput"
               name="tipo"
               value={novaDoacao.tipo}
@@ -338,13 +434,12 @@ const Doacoes = () => {
             />
           </div>
 
-          {/* Campo STATUS (Select) */}
           <div className="col-6 col-md-6 mb-3">
             <label htmlFor="statusSelect" className="form-label">
               Status
             </label>
             <select
-              className="form-select" // form-select é a classe para select
+              className="form-select shadow-sm"
               id="statusSelect"
               name="status"
               value={novaDoacao.status}
@@ -353,17 +448,15 @@ const Doacoes = () => {
               <option value="Pendente">Pendente</option>
               <option value="Em Andamento">Em Andamento</option>
               <option value="Concluído">Concluído</option>
-              {/* Adicione outros status conforme seu C# */}
             </select>
           </div>
 
-          {/* Campo OBSERVAÇÕES (Textarea) */}
           <div className="mb-3">
             <label htmlFor="observacoesInput" className="form-label">
               Observações
             </label>
             <textarea
-              className="form-control"
+              className="form-control shadow-sm"
               id="observacoesInput"
               name="observacoes"
               value={novaDoacao.observacoes}
@@ -372,14 +465,8 @@ const Doacoes = () => {
             />
           </div>
 
-          {/* Botão de Envio */}
-          <button
-            type="submit"
-            className="btn btn-primary" // Botão primário azul
-            disabled={enviando}
-          >
+          <button type="submit" className="btn btn-primary" disabled={enviando}>
             {enviando ? (
-              // Spinner de carregamento do Bootstrap
               <>
                 <span
                   className="spinner-border spinner-border-sm me-2"
