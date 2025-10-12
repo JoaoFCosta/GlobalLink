@@ -16,7 +16,7 @@ const OngLogin = () => {
     }
 
     try {
-      const response = await fetch("https://localhost:7226/api/Auth/OngLogin", {
+      const response = await fetch("http://localhost:5102/api/Auth/OngLogin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, senha: password }),
@@ -24,9 +24,9 @@ const OngLogin = () => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("empresaLogada", JSON.stringify(data));
-        alert(`Bem-vindo(a), ${data.nome}!`);
-        navigate("/DashboardEmpresa");
+        localStorage.setItem("ongLogada", JSON.stringify(data));
+        alert(`Bem-vindo(a)!`);
+        navigate("/DashboardOng");
       } else {
         const errorData = await response.json();
         alert(errorData || "Email ou senha inválidos. Tente novamente.");

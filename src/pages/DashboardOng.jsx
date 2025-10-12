@@ -5,6 +5,16 @@ import LogedHeader from "../components/LogedHeader";
 import Cam from "../assets/cam.jpg";
 
 const DashboardOng = () => {
+  const [empresas, setEmpresas] = useState([]);
+  const [totalEmpresas, setTotalEmpresas] = useState(0);
+  const [ongLogada, setOngLogada] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const [doacoes, setDoacoes] = useState([]);
+  const [totalDoacoes, setTotalDoacoes] = useState(0);
+
+  const navigate = useNavigate();
+
   const brokerHost = "broker.hivemq.com";
   const brokerPort = 8000;
   const topic = "caminhao/status";
@@ -15,8 +25,52 @@ const DashboardOng = () => {
     topic
   );
 
-  const [ongLogada, setOngLogada] = useState("");
-  const navigate = useNavigate();
+  const carregarDoacoes = async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:5102/api/Donates");
+      if (!response.ok)
+        throw new Error(`Erro HTTP ${response.status}: ${response.statusText}`);
+
+      const data = await response.json();
+      setDoacoes(data);
+      setTotalDoacoes(Array.isArray(data) ? data.length : 0);
+      console.log("✅ Doações carregadas:", data);
+    } catch (err) {
+      console.error("❌ Erro ao buscar doações:", err);
+      setTotalDoacoes(0);
+      setDoacoes([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const carregarEmpresas = async () => {
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:5102/api/Companies");
+      if (!response.ok)
+        throw new Error(`Erro HTTP ${response.status}: ${response.statusText}`);
+
+      const data = await response.json();
+      setEmpresas(data);
+      setTotalEmpresas(Array.isArray(data) ? data.length : 0);
+      console.log("✅ Empresas carregadas:", data);
+    } catch (err) {
+      console.error("❌ Erro ao buscar empresas:", err);
+      setTotalEmpresas(0);
+      setEmpresas([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    carregarDoacoes();
+    carregarEmpresas();
+  }, []);
 
   useEffect(() => {
     // Verifica se há uma ong logada
@@ -53,12 +107,8 @@ const DashboardOng = () => {
           <div className="col-12">
             <div className="d-flex flex-column flex-md-row justify-content-between rounded-3 align-items-start align-items-md-center bg-white p-4 shadow-sm border-1">
               <div className="mb-3 mb-md-0">
-                <h3 className="mb-0">Bem-vindo(a), {ongLogada.nome}!</h3>
-                <span>
-                  {" "}
-                  Encontre ONGs que precisam de ajuda e faça a diferença na sua
-                  comunidade
-                </span>
+                <h3 className="mb-0">Bem-vindo(a)!</h3>
+                <span> Acompanhe suas doações e estoques em tempo real</span>
               </div>
 
               <button
@@ -115,19 +165,24 @@ const DashboardOng = () => {
           <p>Nenhuma atividade recente</p>
         </div>
 
-        <div className="col-12 mt-3 bg-white p-4 shadow-sm rounded-3">
+        <div className="col-12 mt-3 bg-white p-4 shadow-sm rounded-3 mb-3">
           <div className="d-flex">
             <i className="bi bi-eye fs-5 me-2"></i>
             <h4>Monitoramento IoT em Tempo Real</h4>
           </div>
           <p>Dados dos sensores ESP32 para controle de estoque</p>
-          <div className="d-flex flex-column flex-md-row gap-3 gap-md-5 justify-content-center">
-            <div className="col-12 col-md-3 border border-1 rounded-3">
+          <div className="d-flex flex-column flex-md-row justify-content-center gap-3 gap-md-5">
+            <div
+              className="col-12 col-md-3 border border-1 rounded-3"
+              style={{ height: "240px" }}
+            >
               <p className="fs-4 fw-medium text-start p-3">Peso atual</p>
               <p className="text-start mx-5 fw-bolder fs-4">
                 {weight ? `${weight} t` : "--"}
               </p>
-              <p className="text-start p-3">Última leitura do sensor HX711</p>
+              <small className="text-start p-3">
+                Última leitura do sensor HX711
+              </small>
             </div>
 
             <div className="col-12 col-md-3 border border-1 rounded-3">
@@ -137,7 +192,9 @@ const DashboardOng = () => {
               <p className="text-start mx-5 fw-bolder fs-4">
                 {distance ? `${distance} m` : "--"}
               </p>
-              <p className="text-start p-3">Sensor ultrassônico HC-SR04</p>
+              <small className="text-start p-3">
+                Sensor ultrassônico HC-SR04
+              </small>
             </div>
 
             <div className="col-12 col-md-3 border border-1 rounded-3">
@@ -148,21 +205,23 @@ const DashboardOng = () => {
             </div>
           </div>
 
-          <div className="d-flex justify-content-center align-items-center">
-            <div className="col-10 border border-1 mt-5 p-3 rounded-3">
+          <div className="container d-flex justify-content-center align-items-center">
+            <div className="col-11 col-md-12 border border-1 mt-3 p-3 rounded-3">
               <p>Informações Técnicas do ESP32</p>
-              <div className="d-flex flex-column flex-md-row gap-3 gap-md-5">
+              <div className="d-flex flex-column flex-md-row text-center gap-3 gap-md-5">
                 <p>
-                  Sensor de Peso <br /> HX711 - Pinos DT:18, SCK:19
+                  <strong>Sensor de Peso</strong> <br /> HX711 - Pinos DT:18,
+                  SCK:19
                 </p>
                 <p>
-                  Sensor de Distância <br /> HC-SR04 - Pinos TRIG:22, ECHO:23
+                  <strong>Sensor de Distância</strong> <br /> HC-SR04 - Pinos
+                  TRIG:22, ECHO:23
                 </p>
                 <p>
-                  Comunicação Serial <br /> USB / WiFi
+                  <strong>Comunicação Serial</strong> <br /> USB / WiFi
                 </p>
                 <p>
-                  Frequência <br /> Atualização a cada 2s
+                  <strong>Frequência</strong> <br /> Atualização a cada 2s
                 </p>
               </div>
               <div className="mt-3">
@@ -174,35 +233,28 @@ const DashboardOng = () => {
               </div>
             </div>
           </div>
-          <div className="col-12 mt-3 bg-white p-4 shadow-sm rounded-3 mb-5">
-            <div className="d-flex flex-column flex-md-row gap-3 gap-md-5 justify-content-center">
-              <div className="col-12 col-md-3 border border-1 rounded-3">
-                <p className="fs-4 fw-medium text-start p-3">
-                  Pessoas atendidas
-                </p>
-                <p className="text-start mx-5 fw-bolder fs-4">12</p>
-                <p className="text-start p-3">Pessoas por dia</p>
-              </div>
 
-              <div className="col-12 col-md-3 border border-1 rounded-3">
-                <p className="fs-4 fw-medium text-start p-3">
-                  Status de necessidade
-                </p>
-                <p className="text-start mx-5 fw-bolder fs-4">🟢 Estável</p>
-                <p className="text-start p-3">Baseado no público atendido</p>
-              </div>
+          <div className="container d-flex gap-md-5 justify-content-center align-items-center mb-3">
+            <div className="col-12 col-md-5 border border-1 mt-3 p-3 rounded-3">
+              <p className="fs-5 fw-semibold">
+                Empresas doadoras <i class="bi bi-building"></i>
+              </p>
+              <span className="fs-2 fw-bolder">{totalEmpresas}</span>
+              <br />
+              <small>Empresas Ativas</small>
+            </div>
 
-              <div className="col-12 col-md-3 mb-5 border border-1 rounded-3">
-                <p className="fs-4 fw-medium text-start p-3">Doações</p>
-                <p className="text-start mx-5 fw-bolder fs-4">2</p>
-                <p className="text-start p-3">Recebidas hoje</p>
-              </div>
+            <div className="col-12 col-md-5 border border-1 mt-3 p-3 rounded-3">
+              <p className="fs-5 fw-semibold">Doações recebidas <i class="bi bi-gift"></i></p>
+              <span className="fs-2 fw-bolder">{totalDoacoes}</span>
+              <br />
+              <small>Doações nas últimas semanas</small>
             </div>
-            <div className="d-flex justify-content-center mt-5">
-              <Link to="/Alerts" className="btn btn-primary fw-medium">
-                Alertas e necessidades
-              </Link>
-            </div>
+          </div>
+          <div className="d-flex justify-content-center mt-5">
+            <Link to="/Alerts" className="btn btn-primary fw-medium">
+              Alertas e necessidades
+            </Link>
           </div>
         </div>
       </div>

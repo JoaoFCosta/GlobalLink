@@ -13,7 +13,6 @@ const Doacoes = () => {
   const [enviando, setEnviando] = useState(false);
   const [showModalDoacoes, setShowModalDoacoes] = useState(false);
   const [showModalOngs, setShowModalOngs] = useState(false);
-  const [doacaoEditando, setDoacaoEditando] = useState(null);
   const [editando, setEditando] = useState(null);
   const [dadosEdicao, setDadosEdicao] = useState({
     tipo: "",

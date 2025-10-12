@@ -296,18 +296,6 @@ const DashboardEmpresa = () => {
                   </div>
                 )}
 
-                {/* HISTÓRICO */}
-                <div className="bg-white mt-4 p-3 p-md-4 rounded-3 border">
-                  <div className="mb-3">
-                    <span className="fw-bolder fs-5">
-                      <i className="bi bi-box-seam me-2"></i>Histórico de
-                      doações
-                    </span>
-                    <br />
-                    <small>Suas doações realizadas recentemente</small>
-                  </div>
-                </div>
-
                 {/* INCENTIVOS */}
                 <div className="bg-white mt-4 p-3 p-md-4 mb-5 rounded-3 border">
                   <div className="row align-items-center">
