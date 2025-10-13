@@ -234,7 +234,7 @@ const DashboardOng = () => {
             </div>
           </div>
 
-          <div className="container d-flex gap-md-5 justify-content-center align-items-center mb-3">
+          <div className="d-flex gap-md-5 justify-content-center align-items-center mb-3">
             <div className="col-12 col-md-5 border border-1 mt-3 p-3 rounded-3">
               <p className="fs-5 fw-semibold">
                 Empresas doadoras <i class="bi bi-building"></i>
@@ -250,6 +250,10 @@ const DashboardOng = () => {
               <br />
               <small>Doações nas últimas semanas</small>
             </div>
+          </div>
+          <div className="col-12 container border border-1 mt-3 p-3 rounded-3">
+            <p className="fs-5 fw-semibold"><i class="bi bi-box-seam"></i> Necessidades</p>
+            <small>Gerencie as necessidades detalhadas da sua organização</small>
           </div>
           <div className="d-flex justify-content-center mt-5">
             <Link to="/Alerts" className="btn btn-primary fw-medium">
