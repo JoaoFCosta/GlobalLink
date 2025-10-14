@@ -29,19 +29,29 @@ const DashboardOng = () => {
   );
 
   useEffect(() => {
-    fetch("http://localhost:5102/api/Needs")
-      .then((response) => {
-        if (!response.ok) throw new Error("Erro ao buscar necessidades");
-        return response.json();
-      })
-      .then((data) => {
-        setNecessidades(data);
-        setTotalNecessidades(data.length);
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
+    const fetchNeeds = async () => {
+      const ongData = JSON.parse(localStorage.getItem("ongData"));
+      if (!ongData || !ongData.email) return;
 
+      try {
+        const response = await fetch(
+          `http://localhost:5102/api/Needs/ByOng/${ongData.email}`
+        );
+        if (!response.ok) throw new Error("Erro ao buscar necessidades");
+
+        const data = await response.json();
+        setNecessidades(data);
+        setTotalNecessidades(data.length); // atualiza total
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNeeds();
+  }, []);
+  
   const carregarDoacoes = async () => {
     setLoading(true);
 
