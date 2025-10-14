@@ -8,8 +8,9 @@ import OngCadastro from "./pages/OngCadastro";
 import DashboardEmpresa from "./pages/DashboardEmpresa";
 import IncentivoFiscal from "./pages/IncentivoFiscal";
 import DashboardOng from "./pages/DashboardOng";
-import Alerts from "./pages/Alerts";
+import Alertas from "./pages/Alerts";
 import Doacoes from "./pages/Doacoes";
+import Needs from "./pages/Needs";
 
 function App() {
   return (
@@ -25,8 +26,9 @@ function App() {
             <Route path="/DashboardEmpresa" element={<DashboardEmpresa />} />
             <Route path="/IncentivoFiscal" element={<IncentivoFiscal />} />
             <Route path="/DashboardOng" element={<DashboardOng />} />
-            <Route path="/Alerts" element={<Alerts />} />
+            <Route path="/Alertas" element={<Alertas />} />
             <Route path="/Doacoes" element={<Doacoes />} />
+            <Route path="/Necessidades" element={<Needs />} />
           </Routes>
         </main>
       </BrowserRouter>

@@ -206,7 +206,7 @@ const DashboardOng = () => {
           </div>
 
           <div className="container d-flex justify-content-center align-items-center">
-            <div className="col-11 col-md-12 border border-1 mt-3 p-3 rounded-3">
+            <div className="col-12 col-md-12 border border-1 mt-3 p-3 rounded-3">
               <p>Informações Técnicas do ESP32</p>
               <div className="d-flex flex-column flex-md-row text-center gap-3 gap-md-5">
                 <p>
@@ -245,18 +245,29 @@ const DashboardOng = () => {
             </div>
 
             <div className="col-12 col-md-5 border border-1 mt-3 p-3 rounded-3">
-              <p className="fs-5 fw-semibold">Doações recebidas <i class="bi bi-gift"></i></p>
+              <p className="fs-5 fw-semibold">
+                Doações recebidas <i class="bi bi-gift"></i>
+              </p>
               <span className="fs-2 fw-bolder">{totalDoacoes}</span>
               <br />
               <small>Doações nas últimas semanas</small>
             </div>
           </div>
           <div className="col-12 container border border-1 mt-3 p-3 rounded-3">
-            <p className="fs-5 fw-semibold"><i class="bi bi-box-seam"></i> Necessidades</p>
-            <small>Gerencie as necessidades detalhadas da sua organização</small>
+            <div className="d-flex justify-content-between">
+              <p className="fs-5 fw-semibold">
+                <i class="bi bi-box-seam"></i> Necessidades
+              </p>
+              <Link to="/Necessidades" className="btn btn-outline-primary mb-2">
+                <i class="bi bi-plus"></i> Ver necessidades
+              </Link>
+            </div>
+            <small>
+              Gerencie as necessidades detalhadas da sua organização
+            </small>
           </div>
           <div className="d-flex justify-content-center mt-5">
-            <Link to="/Alerts" className="btn btn-primary fw-medium">
+            <Link to="/Alertas" className="btn btn-primary fw-medium">
               Alertas e necessidades
             </Link>
           </div>
