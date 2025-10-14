@@ -51,7 +51,7 @@ const DashboardOng = () => {
 
     fetchNeeds();
   }, []);
-  
+
   const carregarDoacoes = async () => {
     setLoading(true);
 
@@ -134,9 +134,6 @@ const DashboardOng = () => {
     return <div>Carregando...</div>;
   }
 
-  if (!ongToken) {
-    return <div>Carregando...</div>;
-  }
   return (
     <>
       <LogedHeader />
@@ -324,7 +321,7 @@ const DashboardOng = () => {
                 <span className="fs-5 fw-semibold">Necessidades Atendidas</span>
                 <br />
 
-                <span className="text-success fw-bolder fs-1">7</span>
+                <span className="text-success fw-bolder fs-1">{totalDoacoes}</span>
               </div>
             </div>
           </div>

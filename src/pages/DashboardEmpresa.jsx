@@ -4,7 +4,8 @@ import { Link, useNavigate } from "react-router";
 import { useTheme } from "../contexts/ThemeContext";
 
 const DashboardEmpresa = () => {
-  const [empresaLogada, setEmpresaLogada] = useState(null);
+  const [companyToken, setCompanyToken] = useState("");
+  const [companyInfo, setCompanyInfo] = useState({ nome: "", email: "" });
   const [totalOngs, setTotalOngs] = useState(0);
   const [ongs, setOngs] = useState([]);
   const [needs, setNeeds] = useState([]);
@@ -14,13 +15,6 @@ const DashboardEmpresa = () => {
   const [selectedNeeds, setSelectedNeeds] = useState([]);
   const navigate = useNavigate();
   const { darkMode } = useTheme();
-
-  useEffect(() => {
-    const dados = localStorage.getItem("empresaLogada");
-    if (dados) {
-      setEmpresaLogada(JSON.parse(dados));
-    }
-  }, []);
 
   useEffect(() => {
     fetch("http://localhost:5102/api/Ongs")
@@ -54,10 +48,33 @@ const DashboardEmpresa = () => {
   const handleLogout = () => {
     const confirmar = window.confirm("Tem certeza que deseja sair da conta?");
     if (confirmar) {
-      localStorage.removeItem("empresaLogada");
+      localStorage.removeItem("companyData");
       navigate("/");
     }
   };
+
+  useEffect(() => {
+    // Verifica se há uma empresa logada
+    const empresa = localStorage.getItem("companyData"); // objeto com nome/email/token
+
+    if (empresa) {
+      try {
+        const parsed = JSON.parse(empresa);
+        setCompanyInfo({
+          nome: parsed.nome,
+          email: parsed.email,
+          id: parsed.id,
+        });
+        setCompanyToken(parsed.token);
+      } catch (err) {
+        console.error("Erro ao ler dados da Empresa:", err);
+        navigate("/EmpresaLogin");
+      }
+    } else {
+      // Se não há ong logada, redireciona para login
+      navigate("/EmpresaLogin");
+    }
+  }, [navigate]);
 
   const handleShowNeeds = () => {
     setSelectedNeeds(needs);
@@ -66,7 +83,7 @@ const DashboardEmpresa = () => {
 
   const handleCloseModal = () => setShowModal(false);
 
-  if (!empresaLogada) {
+  if (!companyToken) {
     return <div>Carregando...</div>;
   }
 
@@ -79,7 +96,11 @@ const DashboardEmpresa = () => {
           <div className="col-12">
             <div className="d-flex justify-content-between align-items-center bg-white p-4 shadow-sm border-1">
               <div>
-                <h3 className="mb-0">Bem-vindo(a)!</h3>
+                <h3 className="mb-0">
+                  Bem-vindo(a) {companyInfo.nome || companyInfo.email}!
+                </h3>
+                <span className="fw-bolder">ID da ONG: {companyInfo.id}</span>
+                <br />
                 <span>
                   Encontre ONGs que precisam de ajuda e faça a diferença na sua
                   comunidade
@@ -230,33 +251,61 @@ const DashboardEmpresa = () => {
                 {showModal && (
                   <div
                     className="modal fade show d-block"
-                    style={{ backgroundColor: darkMode ? "rgba(0,0,0,0.7)" : "rgba(0,0,0,0.35)" }}
+                    style={{
+                      backgroundColor: darkMode
+                        ? "rgba(0,0,0,0.7)"
+                        : "rgba(0,0,0,0.35)",
+                    }}
                     tabIndex="-1"
                   >
                     <div className="modal-dialog modal-dialog-centered modal-lg">
                       <div
-                        className={`modal-content shadow-lg ${darkMode ? "bg-dark text-light border-secondary" : "bg-white text-dark border-light"}`}
+                        className={`modal-content shadow-lg ${
+                          darkMode
+                            ? "bg-dark text-light border-secondary"
+                            : "bg-white text-dark border-light"
+                        }`}
                         style={{ borderWidth: 1 }}
                       >
-                        <div className={`modal-header ${darkMode ? "border-secondary" : "border-light"}`}>
-                          <h5 className={`modal-title ${darkMode ? "text-light" : "text-primary"}`}>
+                        <div
+                          className={`modal-header ${
+                            darkMode ? "border-secondary" : "border-light"
+                          }`}
+                        >
+                          <h5
+                            className={`modal-title ${
+                              darkMode ? "text-light" : "text-primary"
+                            }`}
+                          >
                             Necessidades das ONGs
                           </h5>
                           <button
                             type="button"
                             // Use proper close button style depending on theme
-                            className={darkMode ? "btn-close btn-close-white" : "btn-close"}
+                            className={
+                              darkMode
+                                ? "btn-close btn-close-white"
+                                : "btn-close"
+                            }
                             onClick={handleCloseModal}
                           ></button>
                         </div>
 
                         <div className="modal-body">
                           {loading ? (
-                            <p className={`text-center ${darkMode ? "text-muted" : "text-muted"}`}>
+                            <p
+                              className={`text-center ${
+                                darkMode ? "text-muted" : "text-muted"
+                              }`}
+                            >
                               Carregando...
                             </p>
                           ) : selectedNeeds.length === 0 ? (
-                            <p className={`text-center ${darkMode ? "text-muted" : "text-muted"}`}>
+                            <p
+                              className={`text-center ${
+                                darkMode ? "text-muted" : "text-muted"
+                              }`}
+                            >
                               Nenhuma necessidade cadastrada.
                             </p>
                           ) : (
@@ -264,18 +313,37 @@ const DashboardEmpresa = () => {
                               {selectedNeeds.map((need) => (
                                 <div
                                   key={need.id || need.necessidadeTitulo}
-                                  className={`list-group-item list-group-item-action flex-column align-items-start mb-3 rounded-3 ${darkMode ? "bg-secondary bg-opacity-10 border-secondary text-light" : "bg-secondary bg-opacity-25 border-secondary text-dark"}`}
+                                  className={`list-group-item list-group-item-action flex-column align-items-start mb-3 rounded-3 ${
+                                    darkMode
+                                      ? "bg-secondary bg-opacity-10 border-secondary text-light"
+                                      : "bg-secondary bg-opacity-25 border-secondary text-dark"
+                                  }`}
                                 >
                                   <div className="d-flex w-100 justify-content-between">
-                                    <h6 className={`mb-1 fw-bold ${darkMode ? "text-light" : "text-primary"}`}>
+                                    <h6
+                                      className={`mb-1 fw-bold ${
+                                        darkMode ? "text-light" : "text-primary"
+                                      }`}
+                                    >
                                       {need.necessidadeTitulo || "Sem título"}
                                     </h6>
-                                    <small className={`${darkMode ? "text-light" : "text-muted"}`}>
+                                    <small
+                                      className={`${
+                                        darkMode ? "text-light" : "text-muted"
+                                      }`}
+                                    >
                                       ONG: {need.ongNome || "Desconhecida"}
                                     </small>
                                   </div>
-                                  <p className={`${darkMode ? "mb-1 text-light" : "mb-1 text-dark"}`}>
-                                    {need.necessidadeDescricao || "Sem descrição."}
+                                  <p
+                                    className={`${
+                                      darkMode
+                                        ? "mb-1 text-light"
+                                        : "mb-1 text-dark"
+                                    }`}
+                                  >
+                                    {need.necessidadeDescricao ||
+                                      "Sem descrição."}
                                   </p>
                                 </div>
                               ))}
@@ -283,9 +351,17 @@ const DashboardEmpresa = () => {
                           )}
                         </div>
 
-                        <div className={`modal-footer ${darkMode ? "border-secondary" : "border-light"}`}>
+                        <div
+                          className={`modal-footer ${
+                            darkMode ? "border-secondary" : "border-light"
+                          }`}
+                        >
                           <button
-                            className={darkMode ? "btn btn-outline-light" : "btn btn-outline-secondary"}
+                            className={
+                              darkMode
+                                ? "btn btn-outline-light"
+                                : "btn btn-outline-secondary"
+                            }
                             onClick={handleCloseModal}
                           >
                             Fechar

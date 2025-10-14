@@ -11,104 +11,49 @@ const EmpresaLogin = () => {
     e.preventDefault();
 
     if (!email || !password) {
-      alert("Preencha todos os campos!");
+      alert("Preencha e-mail e senha!");
       return;
     }
 
     try {
-      const response = await fetch(
-        "http://localhost:5102/api/Auth/CompanyLogin",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, senha: password }),
-        }
-      );
+      const response = await fetch("http://localhost:5102/api/Auth/CompanyLogin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          senha: password, // seu backend espera "senha", não "password"
+        }),
+      });
 
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("empresaLogada", JSON.stringify(data));
-        alert(`Bem-vindo(a)`);
-        navigate("/DashboardEmpresa");
-      } else {
+      // Verifica se a requisição foi bem-sucedida
+      if (!response.ok) {
         const errorData = await response.json();
-        alert(errorData || "Email ou senha inválidos. Tente novamente.");
+        alert(errorData.message || "Erro ao fazer login");
         return;
       }
 
-      const authData = await response.json();
-      console.log("Resposta de autenticação:", authData);
+      const data = await response.json();
 
-      // Se o backend retornar um token, gravamos para uso posterior
-      const token = authData.token || authData.accessToken || null;
-      if (token) {
-        localStorage.setItem("empresaToken", token);
-      }
+      // Salva o token retornado pelo backend
+      localStorage.setItem("companyToken", data.token);
 
-      let empresaCompleta = authData;
-
-      try {
-        // Se o authData contiver um id, buscamos diretamente por id (mais eficiente)
-        if (authData.id) {
-          const companyByIdUrl = `http://localhost:5102/api/Companies/${authData.id}`;
-          const res = await fetch(companyByIdUrl, {
-            method: "GET",
-            headers: token
-              ? {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                }
-              : { "Content-Type": "application/json" },
-          });
-
-          if (res.ok) {
-            const companyData = await res.json();
-            empresaCompleta = companyData || empresaCompleta;
-          }
-        } else {
-          // fallback: busca lista e tenta encontrar pelo email
-          const companiesUrl = "http://localhost:5102/api/Companies";
-          const companiesRes = await fetch(companiesUrl, {
-            method: "GET",
-            headers: token
-              ? {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                }
-              : { "Content-Type": "application/json" },
-          });
-
-          if (companiesRes.ok) {
-            const companies = await companiesRes.json();
-            const found = (Array.isArray(companies) ? companies : []).find(
-              (c) =>
-                c.email &&
-                authData.email &&
-                c.email.toLowerCase() === authData.email.toLowerCase()
-            );
-
-            if (found) {
-              empresaCompleta = found;
-            }
-          }
-        }
-      } catch (err) {
-        console.warn(
-          "Não foi possível buscar dados completos da empresa:",
-          err
-        );
-      }
-
-      // Salva o objeto completo (ou pelo menos o retorno do login)
-      localStorage.setItem("empresaLogada", JSON.stringify(empresaCompleta));
-      alert(
-        `Bem-vindo(a), ${
-          empresaCompleta.nome || empresaCompleta.Nome || email
-        }!`
+      localStorage.setItem(
+        "companyData",
+        JSON.stringify({
+          token: data.token,
+          email: data.email,
+          nome: data.nome,
+          id: data.id,
+        })
       );
+      console.log("✅ Login realizado com sucesso:", data);
+
+      // Redireciona para o dashboard
       navigate("/DashboardEmpresa");
     } catch (error) {
-      console.error("Erro ao realizar o login:", error);
+      console.error("Erro no login:", error);
       alert("Erro ao conectar com o servidor.");
     }
   };
