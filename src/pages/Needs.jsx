@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import LogedHeader from "../components/LogedHeader";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { useTheme } from "../contexts/ThemeContext";
 
 const Needs = () => {
@@ -92,6 +92,58 @@ const Needs = () => {
     }
   };
 
+  const handleDeleteNeed = async (necessidadeId) => {
+    // ⚠️ Etapa de Segurança: Confirmação do Usuário
+    if (
+      !window.confirm(
+        `Tem certeza que deseja deletar a necessidade ID ${necessidadeId}? Esta ação é irreversível.`
+      )
+    ) {
+      return;
+    }
+
+    // Opcional: Controle de loading para desabilitar o botão enquanto deleta
+    // setDeletando(true);
+
+    try {
+      const response = await fetch(
+        `http://localhost:5102/api/Needs/${necessidadeId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            // Se sua API exigir autenticação (JWT), adicione o Authorization header aqui
+          },
+        }
+      );
+
+      if (response.status === 204) {
+        // Sucesso: 204 No Content
+        alert(`Necessidade ID ${necessidadeId} excluída com sucesso!`);
+
+        // Recarrega a lista de necessidades para atualizar a UI
+        // Se você já tem a função carregarNecessidades, chame-a aqui.
+        // Exemplo: carregarNecessidades();
+      } else if (response.status === 404) {
+        alert(
+          `Erro: Necessidade ID ${necessidadeId} não encontrada. Pode já ter sido excluída.`
+        );
+      } else {
+        // Trata outros erros HTTP
+        const errorText = await response.text();
+        throw new Error(
+          `Falha ao excluir: Status ${response.status} - ${errorText}`
+        );
+      }
+    } catch (error) {
+      console.error("Erro ao deletar:", error);
+      alert(`Erro ao tentar excluir a necessidade: ${error.message}`);
+    }
+    // finally {
+    //    setDeletando(false);
+    // }
+  };
+
   if (loading) return <p>Carregando necessidades...</p>;
 
   return (
@@ -130,9 +182,18 @@ const Needs = () => {
                   key={n.necessidadeId}
                   className="list-group-item border bg-white rounded-3 mb-2 shadow-sm"
                 >
-                  <h6 className="fw-bold text-primary">
-                    {n.necessidadeTitulo}
-                  </h6>
+                  <div className="d-flex justify-content-between">
+                    <h6 className="fw-bold text-primary">
+                      {n.necessidadeTitulo}
+                    </h6>
+                    {/* BOTÃO DE DELETAR */}
+                    <button
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => handleDeleteNeed(n.necessidadeId)}
+                    >
+                      <i className="bi bi-trash"></i>
+                    </button>
+                  </div>
                   <p className="mb-1">{n.necessidadeDescricao}</p>
                   <small>
                     <strong>Urgência:</strong> {n.urgencia} |{" "}
