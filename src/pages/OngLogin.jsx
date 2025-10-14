@@ -11,28 +11,49 @@ const OngLogin = () => {
     e.preventDefault();
 
     if (!email || !password) {
-      alert("Preencha todos os campos!");
+      alert("Preencha e-mail e senha!");
       return;
     }
 
     try {
       const response = await fetch("http://localhost:5102/api/Auth/OngLogin", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, senha: password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          senha: password, // seu backend espera "senha", não "password"
+        }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("ongLogada", JSON.stringify(data));
-        alert(`Bem-vindo(a)!`);
-        navigate("/DashboardOng");
-      } else {
+      // Verifica se a requisição foi bem-sucedida
+      if (!response.ok) {
         const errorData = await response.json();
-        alert(errorData || "Email ou senha inválidos. Tente novamente.");
+        alert(errorData.message || "Erro ao fazer login");
+        return;
       }
+
+      const data = await response.json();
+
+      // Salva o token retornado pelo backend
+      localStorage.setItem("ongToken", data.token);
+
+      localStorage.setItem(
+        "ongData",
+        JSON.stringify({
+          token: data.token,
+          email: data.email,
+          nome: data.nome,
+          id: data.id,
+        })
+      );
+      console.log("✅ Login realizado com sucesso:", data);
+
+      // Redireciona para o dashboard
+      navigate("/DashboardOng");
     } catch (error) {
-      console.error("Erro ao realizar o login:", error);
+      console.error("Erro no login:", error);
       alert("Erro ao conectar com o servidor.");
     }
   };

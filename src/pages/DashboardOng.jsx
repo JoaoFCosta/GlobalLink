@@ -7,7 +7,10 @@ import Cam from "../assets/cam.jpg";
 const DashboardOng = () => {
   const [empresas, setEmpresas] = useState([]);
   const [totalEmpresas, setTotalEmpresas] = useState(0);
-  const [ongLogada, setOngLogada] = useState("");
+  const [ongToken, setOngToken] = useState("");
+  const [ongInfo, setOngInfo] = useState({ nome: "", email: "" });
+  const [necessidades, setNecessidades] = useState([]);
+  const [totalNecessidades, setTotalNecessidades] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const [doacoes, setDoacoes] = useState([]);
@@ -24,6 +27,20 @@ const DashboardOng = () => {
     brokerPort,
     topic
   );
+
+  useEffect(() => {
+    fetch("http://localhost:5102/api/Needs")
+      .then((response) => {
+        if (!response.ok) throw new Error("Erro ao buscar necessidades");
+        return response.json();
+      })
+      .then((data) => {
+        setNecessidades(data);
+        setTotalNecessidades(data.length);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, []);
 
   const carregarDoacoes = async () => {
     setLoading(true);
@@ -74,10 +91,17 @@ const DashboardOng = () => {
 
   useEffect(() => {
     // Verifica se há uma ong logada
-    const ong = JSON.parse(localStorage.getItem("ongLogada"));
+    const ong = localStorage.getItem("ongData"); // pegamos o objeto com nome/email/token
 
     if (ong) {
-      setOngLogada(ong);
+      try {
+        const parsed = JSON.parse(ong);
+        setOngInfo({ nome: parsed.nome, email: parsed.email, id: parsed.id });
+        setOngToken(parsed.token);
+      } catch (err) {
+        console.error("Erro ao ler dados da ONG:", err);
+        navigate("/OngLogin");
+      }
     } else {
       // Se não há ong logada, redireciona para login
       navigate("/OngLogin");
@@ -89,25 +113,33 @@ const DashboardOng = () => {
 
     if (confirmar) {
       // Remove a sessão da ong
-      localStorage.removeItem("ongLogada");
+      localStorage.removeItem("ongData");
 
       // Redireciona para a página inicial
       navigate("/");
     }
   };
 
-  if (!ongLogada) {
+  if (!ongToken) {
+    return <div>Carregando...</div>;
+  }
+
+  if (!ongToken) {
     return <div>Carregando...</div>;
   }
   return (
     <>
       <LogedHeader />
-      <div className="container-fluid mt-3">
+      <div className="container-fluid mt-3 p-3">
         <div className="row">
           <div className="col-12">
             <div className="d-flex flex-column flex-md-row justify-content-between rounded-3 align-items-start align-items-md-center bg-white p-4 shadow-sm border-1">
               <div className="mb-3 mb-md-0">
-                <h3 className="mb-0">Bem-vindo(a)!</h3>
+                <h3 className="mb-0">
+                  Bem-vindo(a) {ongInfo.nome || ongInfo.email}!
+                </h3>
+                <span className="fw-bolder">ID da ONG: {ongInfo.id}</span>
+                <br />
                 <span> Acompanhe suas doações e estoques em tempo real</span>
               </div>
 
@@ -123,7 +155,7 @@ const DashboardOng = () => {
           </div>
         </div>
 
-        <div className="col-12 mt-3 bg-white p-4 shadow-sm rounded-3">
+        <div className="col-12 mt-3 bg-white p-5 shadow-sm rounded-3">
           <div className="d-flex">
             <i className="bi bi-eye fs-5 me-2"></i>
             <h4>Monitoramento de pessoas com IA</h4>
@@ -134,26 +166,26 @@ const DashboardOng = () => {
             <i className="bi bi-people fs-1"></i>
             <span className="fs-1 fw-bolder">12</span>
             <p>Pessoas no local agora</p>
-            <div className="d-flex flex-column flex-lg-row justify-content-center gap-3 gap-lg-5">
+            <div className="d-flex flex-column flex-md-row justify-content-center gap-3 gap-md-5">
               <img
                 src={Cam}
                 alt=""
                 className="rounded-3 img-fluid"
-                style={{ maxWidth: "400px" }}
+                style={{ maxWidth: "500px" }}
               />
-              <div className="col-12 col-lg-3 border border-1 rounded-3">
+              <div className="col-12 col-md-4 border border-1 rounded-3">
                 <p className="fs-4 fw-medium text-start p-3 text-success">
                   Entradas
                 </p>
-                <p className="text-start mx-5 fw-bolder fs-4">19</p>
+                <p className="text-start mx-5 fw-bolder fs-1">19</p>
                 <p className="text-start p-3">Hoje</p>
               </div>
 
-              <div className="col-12 col-lg-3 border border-1 rounded-3">
+              <div className="col-12 col-md-4 border border-1 rounded-3">
                 <p className="fs-4 fw-medium text-start p-3 text-danger">
                   Saídas
                 </p>
-                <p className="text-start mx-5 fw-bolder fs-4">20</p>
+                <p className="text-start mx-5 fw-bolder fs-1">20</p>
                 <p className="text-start p-3">Hoje</p>
               </div>
             </div>
@@ -165,15 +197,15 @@ const DashboardOng = () => {
           <p>Nenhuma atividade recente</p>
         </div>
 
-        <div className="col-12 mt-3 bg-white p-4 shadow-sm rounded-3 mb-3">
+        <div className="col-12 p-3 mt-3 bg-white p-5  shadow-sm rounded-3 mb-3">
           <div className="d-flex">
             <i className="bi bi-eye fs-5 me-2"></i>
             <h4>Monitoramento IoT em Tempo Real</h4>
           </div>
           <p>Dados dos sensores ESP32 para controle de estoque</p>
-          <div className="d-flex flex-column flex-md-row justify-content-center gap-3 gap-md-5">
+          <div className="d-flex flex-column flex-md-row justify-content-center gap-3 gap-md-3">
             <div
-              className="col-12 col-md-3 border border-1 rounded-3"
+              className="col-12 col-md-4 border border-1 rounded-3"
               style={{ height: "240px" }}
             >
               <p className="fs-4 fw-medium text-start p-3">Peso atual</p>
@@ -185,7 +217,7 @@ const DashboardOng = () => {
               </small>
             </div>
 
-            <div className="col-12 col-md-3 border border-1 rounded-3">
+            <div className="col-12 col-md-4 border border-1 rounded-3">
               <p className="fs-4 fw-medium text-start p-3">
                 Distância do sensor
               </p>
@@ -197,7 +229,7 @@ const DashboardOng = () => {
               </small>
             </div>
 
-            <div className="col-12 col-md-3 border border-1 rounded-3">
+            <div className="col-12 col-md-4 border border-1 rounded-3">
               <p className="fs-4 fw-medium text-start p-3">
                 Status do caminhão
               </p>
@@ -205,7 +237,7 @@ const DashboardOng = () => {
             </div>
           </div>
 
-          <div className="container d-flex justify-content-center align-items-center">
+          <div className="d-flex justify-content-center align-items-center">
             <div className="col-12 col-md-12 border border-1 mt-3 p-3 rounded-3">
               <p>Informações Técnicas do ESP32</p>
               <div className="d-flex flex-column flex-md-row text-center gap-3 gap-md-5">
@@ -234,8 +266,8 @@ const DashboardOng = () => {
             </div>
           </div>
 
-          <div className="d-flex gap-md-5 justify-content-center align-items-center mb-3">
-            <div className="col-12 col-md-5 border border-1 mt-3 p-3 rounded-3">
+          <div className="d-flex align-items-center gap-4 mb-3">
+            <div className="col-12 col-md-6 border border-1 mt-3 p-3 rounded-3">
               <p className="fs-5 fw-semibold">
                 Empresas doadoras <i class="bi bi-building"></i>
               </p>
@@ -244,7 +276,7 @@ const DashboardOng = () => {
               <small>Empresas Ativas</small>
             </div>
 
-            <div className="col-12 col-md-5 border border-1 mt-3 p-3 rounded-3">
+            <div className="col-12 col-md-6 border border-1 mt-3 p-3 rounded-3">
               <p className="fs-5 fw-semibold">
                 Doações recebidas <i class="bi bi-gift"></i>
               </p>
@@ -253,10 +285,10 @@ const DashboardOng = () => {
               <small>Doações nas últimas semanas</small>
             </div>
           </div>
-          <div className="col-12 container border border-1 mt-3 p-3 rounded-3">
+          <div className="col-12 col-md-12 border border-1 mt-3 p-3 rounded-3">
             <div className="d-flex justify-content-between">
-              <p className="fs-5 fw-semibold">
-                <i class="bi bi-box-seam"></i> Necessidades
+              <p className="fs-4 fw-semibold">
+                <i className="bi bi-box-seam"></i> Necessidades
               </p>
               <Link to="/Necessidades" className="btn btn-outline-primary mb-2">
                 <i class="bi bi-plus"></i> Ver necessidades
@@ -265,11 +297,26 @@ const DashboardOng = () => {
             <small>
               Gerencie as necessidades detalhadas da sua organização
             </small>
-          </div>
-          <div className="d-flex justify-content-center mt-5">
-            <Link to="/Alertas" className="btn btn-primary fw-medium">
-              Alertas e necessidades
-            </Link>
+
+            <div className="d-flex gap-5 justify-content-center">
+              <div className="col-5 border border-1 p-3 shadow-sm rounded-3">
+                <span className="fs-5 fw-semibold">
+                  Necessidades Urgentes / Pendentes
+                </span>
+                <br />
+
+                <span className="text-danger fw-bolder fs-1">
+                  {totalNecessidades}
+                </span>
+              </div>
+
+              <div className="col-5 border border-1 p-3 shadow-sm rounded-3">
+                <span className="fs-5 fw-semibold">Necessidades Atendidas</span>
+                <br />
+
+                <span className="text-success fw-bolder fs-1">7</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
