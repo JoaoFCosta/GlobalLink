@@ -13,7 +13,6 @@
 </div>
 
 ## Links
-<a href="https://www.globallinkapi.somee.com/swagger/index.html">Projeto BackEnd na Somee</a> <br>
 <a href="https://github.com/JoaoFCosta/GlobalLinkAPI">Repositório API</a>
 <br>
 <a href="https://global-link-six.vercel.app/">Site na Vercel</a> <br>
