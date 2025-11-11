@@ -13,7 +13,7 @@ export function useMqtt(brokerHost, brokerPort, topic) {
     const port = Number(brokerPort);
 
     const mqttClient = new Paho.Client(
-      `ws://${brokerHost}:${port}/mqtt`, // ws para HiveMQ
+      `wss://${brokerHost}:${port}/mqtt`, // ws para HiveMQ
       `client_${Math.random()}`
     );
 
