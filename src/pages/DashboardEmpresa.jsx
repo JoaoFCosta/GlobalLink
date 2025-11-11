@@ -99,7 +99,7 @@ const DashboardEmpresa = () => {
                 <h3 className="mb-0">
                   Bem-vindo(a) {companyInfo.nome || companyInfo.email}!
                 </h3>
-                <span className="fw-bolder">ID da ONG: {companyInfo.id}</span>
+                <span className="fw-bolder">ID da Empresa: {companyInfo.id}</span>
                 <br />
                 <span>
                   Encontre ONGs que precisam de ajuda e faça a diferença na sua
