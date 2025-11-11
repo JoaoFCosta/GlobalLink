@@ -35,7 +35,7 @@ const OngCadastro = () => {
 
     try {
       const response = await fetch(
-        "http://www.globallinkapi.somee.com/api/Auth/OngRegister",
+        "https://www.globallinkapi.somee.com/api/Auth/OngRegister",
         {
           method: "POST",
           headers: {

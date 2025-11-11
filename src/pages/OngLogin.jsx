@@ -16,14 +16,14 @@ const OngLogin = () => {
     }
 
     try {
-      const response = await fetch("http://www.globallinkapi.somee.com/api/Auth/OngLogin", {
+      const response = await fetch("https://www.globallinkapi.somee.com/api/Auth/OngLogin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: email,
-          senha: password, // seu backend espera "senha", não "password"
+          senha: password,
         }),
       });
 

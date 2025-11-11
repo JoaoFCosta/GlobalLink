@@ -16,7 +16,7 @@ const EmpresaLogin = () => {
     }
 
     try {
-      const response = await fetch("http://www.globallinkapi.somee.com/api/Auth/CompanyLogin", {
+      const response = await fetch("https://www.globallinkapi.somee.com/api/Auth/CompanyLogin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

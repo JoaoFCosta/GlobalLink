@@ -28,7 +28,7 @@ const Needs = () => {
 
       try {
         const response = await fetch(
-          `http://www.globallinkapi.somee.com/api/Needs/ByOng/${ongData.email}`
+          `https://www.globallinkapi.somee.com/api/Needs/ByOng/${ongData.email}`
         );
         if (!response.ok) throw new Error("Erro ao buscar necessidades");
 
@@ -62,7 +62,7 @@ const Needs = () => {
     }
 
     try {
-      const response = await fetch("http://www.globallinkapi.somee.com/api/Needs", {
+      const response = await fetch("https://www.globallinkapi.somee.com/api/Needs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...novaNecessidade, OngId: ongData.id }),
@@ -107,7 +107,7 @@ const Needs = () => {
 
     try {
       const response = await fetch(
-        `http://www.globallinkapi.somee.com/api/Needs/${necessidadeId}`,
+        `https://www.globallinkapi.somee.com/api/Needs/${necessidadeId}`,
         {
           method: "DELETE",
           headers: {

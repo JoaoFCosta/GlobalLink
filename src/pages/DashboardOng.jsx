@@ -35,7 +35,7 @@ const DashboardOng = () => {
 
       try {
         const response = await fetch(
-          `http://www.globallinkapi.somee.com/api/Needs/ByOng/${ongData.email}`
+          `https://www.globallinkapi.somee.com/api/Needs/ByOng/${ongData.email}`
         );
         if (!response.ok) throw new Error("Erro ao buscar necessidades");
 
@@ -56,7 +56,7 @@ const DashboardOng = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://www.globallinkapi.somee.com/api/Donates");
+      const response = await fetch("https://www.globallinkapi.somee.com/api/Donates");
       if (!response.ok)
         throw new Error(`Erro HTTP ${response.status}: ${response.statusText}`);
 
@@ -77,7 +77,7 @@ const DashboardOng = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://www.globallinkapi.somee.com/api/Companies");
+      const response = await fetch("https://www.globallinkapi.somee.com/api/Companies");
       if (!response.ok)
         throw new Error(`Erro HTTP ${response.status}: ${response.statusText}`);
 

@@ -17,7 +17,7 @@ const DashboardEmpresa = () => {
   const { darkMode } = useTheme();
 
   useEffect(() => {
-    fetch("http://www.globallinkapi.somee.com/api/Ongs")
+    fetch("https://www.globallinkapi.somee.com/api/Ongs")
       .then((response) => {
         if (!response.ok) throw new Error("Erro ao buscar ONGs");
         return response.json();
@@ -32,7 +32,7 @@ const DashboardEmpresa = () => {
   }, []);
 
   useEffect(() => {
-    fetch("http://www.globallinkapi.somee.com/api/Needs")
+    fetch("https://www.globallinkapi.somee.com/api/Needs")
       .then((response) => {
         if (!response.ok) throw new Error("Erro ao buscar necessidades");
         return response.json();
