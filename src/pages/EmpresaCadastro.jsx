@@ -35,7 +35,7 @@ const EmpresaCadastro = () => {
 
     try {
       const response = await fetch(
-        "https://localhost:5102/api/Auth/CompanyRegister",
+        "http://www.globallinkapi.somee.com/api/Auth/CompanyRegister",
         {
           method: "POST",
           headers: {

@@ -16,7 +16,7 @@ const OngLogin = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5102/api/Auth/OngLogin", {
+      const response = await fetch("http://www.globallinkapi.somee.com/api/Auth/OngLogin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

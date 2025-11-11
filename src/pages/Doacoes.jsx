@@ -38,7 +38,9 @@ const Doacoes = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5102/api/Ongs");
+      const response = await fetch(
+        "http://www.globallinkapi.somee.com/api/Ongs"
+      );
       if (!response.ok)
         throw new Error(`Erro HTTP ${response.status}: ${response.statusText}`);
 
@@ -60,7 +62,9 @@ const Doacoes = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5102/api/Donates");
+      const response = await fetch(
+        "http://www.globallinkapi.somee.com/api/Donates"
+      );
       if (!response.ok)
         throw new Error(`Erro HTTP ${response.status}: ${response.statusText}`);
 
@@ -89,7 +93,7 @@ const Doacoes = () => {
     setFeedback(null);
 
     try {
-      const response = await fetch(`http://localhost:5102/api/Donates/${id}`, {
+      const response = await fetch(`http://www.globallinkapi.somee.com/api/Donates/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -164,7 +168,7 @@ const Doacoes = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const url = "http://localhost:5102/api/Donates";
+    const url = "http://www.globallinkapi.somee.com/api/Donates";
     setEnviando(true);
     setFeedback(null);
 
@@ -232,7 +236,7 @@ const Doacoes = () => {
     setFeedback(null);
 
     try {
-      const response = await fetch(`http://localhost:5102/api/Donates/${id}`, {
+      const response = await fetch(`http://www.globallinkapi.somee.com/api/Donates/${id}`, {
         method: "DELETE",
       });
 
