@@ -56,7 +56,9 @@ const DashboardOng = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("https://www.globallinkapi.somee.com/api/Donates");
+      const response = await fetch(
+        "https://www.globallinkapi.somee.com/api/Donates"
+      );
       if (!response.ok)
         throw new Error(`Erro HTTP ${response.status}: ${response.statusText}`);
 
@@ -77,7 +79,9 @@ const DashboardOng = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("https://www.globallinkapi.somee.com/api/Companies");
+      const response = await fetch(
+        "https://www.globallinkapi.somee.com/api/Companies"
+      );
       if (!response.ok)
         throw new Error(`Erro HTTP ${response.status}: ${response.statusText}`);
 
@@ -273,55 +277,76 @@ const DashboardOng = () => {
             </div>
           </div>
 
-          <div className="d-flex align-items-center gap-4 mb-3">
-            <div className="col-12 col-md-6 border border-1 mt-3 p-3 rounded-3">
-              <p className="fs-5 fw-semibold">
-                Empresas doadoras <i class="bi bi-building"></i>
-              </p>
-              <span className="fs-2 fw-bolder">{totalEmpresas}</span>
-              <br />
-              <small>Empresas Ativas</small>
-            </div>
-
-            <div className="col-12 col-md-6 border border-1 mt-3 p-3 rounded-3">
-              <p className="fs-5 fw-semibold">
-                Doações recebidas <i class="bi bi-gift"></i>
-              </p>
-              <span className="fs-2 fw-bolder">{totalDoacoes}</span>
-              <br />
-              <small>Doações nas últimas semanas</small>
-            </div>
-          </div>
-          <div className="col-12 col-md-12 border border-1 mt-3 p-3 rounded-3">
-            <div className="d-flex justify-content-between">
-              <p className="fs-4 fw-semibold">
-                <i className="bi bi-box-seam"></i> Necessidades
-              </p>
-              <Link to="/Necessidades" className="btn btn-outline-primary mb-2">
-                <i class="bi bi-plus"></i> Ver necessidades
-              </Link>
-            </div>
-            <small>
-              Gerencie as necessidades detalhadas da sua organização
-            </small>
-
-            <div className="d-flex gap-5 justify-content-center">
-              <div className="col-5 border border-1 p-3 shadow-sm rounded-3">
-                <span className="fs-5 fw-semibold">
-                  Necessidades Urgentes / Pendentes
-                </span>
-                <br />
-
-                <span className="text-danger fw-bolder fs-1">
-                  {totalNecessidades}
-                </span>
+          <div className="container mt-3">
+            {/* ==== CARDS SUPERIORES ==== */}
+            <div className="row g-3 mb-3">
+              <div className="col-12 col-md-6">
+                <div className="border border-1 p-3 rounded-3 h-100">
+                  <p className="fs-5 fw-semibold">
+                    Empresas doadoras <i className="bi bi-building"></i>
+                  </p>
+                  <span className="fs-2 fw-bolder">{totalEmpresas}</span>
+                  <br />
+                  <small>Empresas Ativas</small>
+                </div>
               </div>
 
-              <div className="col-5 border border-1 p-3 shadow-sm rounded-3">
-                <span className="fs-5 fw-semibold">Necessidades Atendidas</span>
-                <br />
+              <div className="col-12 col-md-6">
+                <div className="border border-1 p-3 rounded-3 h-100">
+                  <p className="fs-5 fw-semibold">
+                    Doações recebidas <i className="bi bi-gift"></i>
+                  </p>
+                  <span className="fs-2 fw-bolder">{totalDoacoes}</span>
+                  <br />
+                  <small>Doações nas últimas semanas</small>
+                </div>
+              </div>
+            </div>
 
-                <span className="text-success fw-bolder fs-1">{totalDoacoes}</span>
+            {/* ==== SEÇÃO DE NECESSIDADES ==== */}
+            <div className="row">
+              <div className="col-12">
+                <div className="border border-1 p-3 rounded-3">
+                  <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
+                    <p className="fs-4 fw-semibold mb-2 mb-md-0">
+                      <i className="bi bi-box-seam"></i> Necessidades
+                    </p>
+                    <Link
+                      to="/Necessidades"
+                      className="btn btn-outline-primary"
+                    >
+                      <i className="bi bi-plus"></i> Ver necessidades
+                    </Link>
+                  </div>
+
+                  <small>
+                    Gerencie as necessidades detalhadas da sua organização
+                  </small>
+
+                  <div className="row g-3 mt-3 justify-content-center">
+                    <div className="col-12 col-md-6 col-lg-5">
+                      <div className="border border-1 p-3 shadow-sm rounded-3 h-100 text-center">
+                        <span className="fs-5 fw-semibold d-block mb-2">
+                          Necessidades Urgentes / Pendentes
+                        </span>
+                        <span className="text-danger fw-bolder fs-1">
+                          {totalNecessidades}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-md-6 col-lg-5">
+                      <div className="border border-1 p-3 shadow-sm rounded-3 h-100 text-center">
+                        <span className="fs-5 fw-semibold d-block mb-2">
+                          Necessidades Atendidas
+                        </span>
+                        <span className="text-success fw-bolder fs-1">
+                          {totalDoacoes}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
