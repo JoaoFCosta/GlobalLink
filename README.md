@@ -16,6 +16,7 @@
 <a href="https://github.com/JoaoFCosta/GlobalLinkAPI">Repositório API</a>
 <br>
 <a href="https://global-link-six.vercel.app/">Site na Vercel</a> <br>
+<a href="/Document10.pdf" target="_blank">Documentação Técnica</a>
 
 ---
 
