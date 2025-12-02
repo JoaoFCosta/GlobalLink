@@ -166,48 +166,6 @@ const DashboardOng = () => {
           </div>
         </div>
 
-        <div className="col-12 mt-3 bg-white p-5 shadow-sm rounded-3">
-          <div className="d-flex">
-            <i className="bi bi-eye fs-5 me-2"></i>
-            <h4>Monitoramento de pessoas com IA</h4>
-          </div>
-          <p>Sistema de contagem inteligente com câmera e IA</p>
-
-          <div className="justify-content-center text-center">
-            <i className="bi bi-people fs-1"></i>
-            <span className="fs-1 fw-bolder">12</span>
-            <p>Pessoas no local agora</p>
-            <div className="d-flex flex-column flex-md-row justify-content-center gap-3 gap-md-5">
-              <img
-                src={Cam}
-                alt=""
-                className="rounded-3 img-fluid"
-                style={{ maxWidth: "500px" }}
-              />
-              <div className="col-12 col-md-4 border border-1 rounded-3">
-                <p className="fs-4 fw-medium text-start p-3 text-success">
-                  Entradas
-                </p>
-                <p className="text-start mx-5 fw-bolder fs-1">19</p>
-                <p className="text-start p-3">Hoje</p>
-              </div>
-
-              <div className="col-12 col-md-4 border border-1 rounded-3">
-                <p className="fs-4 fw-medium text-start p-3 text-danger">
-                  Saídas
-                </p>
-                <p className="text-start mx-5 fw-bolder fs-1">20</p>
-                <p className="text-start p-3">Hoje</p>
-              </div>
-            </div>
-          </div>
-          <div className="d-flex mt-4">
-            <i className="bi bi-eye fs-5 me-2"></i>
-            <h4>Atividade recente</h4>
-          </div>
-          <p>Nenhuma atividade recente</p>
-        </div>
-
         <div className="col-12 p-3 mt-3 bg-white p-5  shadow-sm rounded-3 mb-3">
           <div className="d-flex">
             <i className="bi bi-eye fs-5 me-2"></i>
