@@ -207,17 +207,9 @@ const DashboardOng = () => {
           </div>
 
           <div className="d-flex justify-content-center align-items-center">
-            <div className="col-12 col-md-12 border border-1 mt-3 p-3 rounded-3">
+            <div className="col-12 border border-1 mt-3 p-3 rounded-3">
               <p>Informações Técnicas do ESP32</p>
               <div className="d-flex flex-column flex-md-row text-center gap-3 gap-md-5">
-                <p>
-                  <strong>Sensor de Peso</strong> <br /> HX711 - Pinos DT:18,
-                  SCK:19
-                </p>
-                <p>
-                  <strong>Sensor de Distância</strong> <br /> HC-SR04 - Pinos
-                  TRIG:22, ECHO:23
-                </p>
                 <p>
                   <strong>Comunicação Serial</strong> <br /> USB / WiFi
                 </p>
