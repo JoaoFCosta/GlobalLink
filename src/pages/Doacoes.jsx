@@ -19,6 +19,8 @@ const Doacoes = () => {
     observacoes: "",
     status: "",
   });
+  const [busca, setBusca] = useState("");
+  const [ongsFiltradas, setOngsFiltradas] = useState([]);
 
   const { darkMode } = useTheme();
 
@@ -93,18 +95,21 @@ const Doacoes = () => {
     setFeedback(null);
 
     try {
-      const response = await fetch(`https://www.globallinkapi.somee.com/api/Donates/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: id,
-          ongId: dadosAtualizados.ongId,
-          empresaId: dadosAtualizados.empresaId,
-          tipo: dadosAtualizados.tipo,
-          observacoes: dadosAtualizados.observacoes,
-          status: dadosAtualizados.status,
-        }),
-      });
+      const response = await fetch(
+        `https://www.globallinkapi.somee.com/api/Donates/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: id,
+            ongId: dadosAtualizados.ongId,
+            empresaId: dadosAtualizados.empresaId,
+            tipo: dadosAtualizados.tipo,
+            observacoes: dadosAtualizados.observacoes,
+            status: dadosAtualizados.status,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const erroData = await response.json().catch(() => ({}));
@@ -236,9 +241,12 @@ const Doacoes = () => {
     setFeedback(null);
 
     try {
-      const response = await fetch(`https://www.globallinkapi.somee.com/api/Donates/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `https://www.globallinkapi.somee.com/api/Donates/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
         const erroData = await response.json().catch(() => ({}));
@@ -259,6 +267,10 @@ const Doacoes = () => {
       setEnviando(false);
     }
   };
+
+  const necessidadesFiltradas = necessidades.filter((ong) =>
+    (ong?.ongNome || "").includes(busca)
+  );
 
   return (
     <>
@@ -353,42 +365,59 @@ const Doacoes = () => {
                     ></button>
                   </div>
 
+                  <div className="col-12 px-3">
+                    <label htmlFor="buscarOng" className="form-label">
+                      Buscar ONG
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control mb-3"
+                      placeholder="Buscar ONG..."
+                      value={busca}
+                      onChange={(e) => setBusca(e.target.value)}
+                    />
+                  </div>
+
                   <div className="modal-body">
                     {loading ? (
                       <p className="text-center text-muted">Carregando...</p>
-                    ) : necessidades.length === 0 ? (
+                    ) : necessidades.filter((ong) =>
+                        (ong?.ongNome || "").includes(busca)
+                      ).length === 0 ? (
                       <p className="text-center text-muted">
                         Nenhuma ONG encontrada.
                       </p>
                     ) : (
                       <div className="list-group text-start">
-                        {necessidades.map((ong) => (
-                          <div
-                            key={ong.id}
-                            className={`list-group-item mb-2 rounded-3 border ${
-                              darkMode
-                                ? "bg-secondary bg-opacity-10 text-light"
-                                : "bg-light text-dark"
-                            }`}
-                          >
-                            <h6 className="fw-bold text-secondary mb-1">
-                              {ong.ongNome}
-                            </h6>
-                            <h6 className="mb-1">
-                              <strong>Código da ONG:</strong> {ong.ongId}
-                            </h6>
-                            <p className="mb-1">
-                              <strong>Local: </strong>
-                              {ong.ongBairro}, {ong.ongRua}, {ong.ongNumero}
-                            </p>
-                            <p className="mb-1">
-                              <strong>Contato:</strong> {ong.ongTelefone}
-                            </p>
-                            <p className="mb-1">
-                              <strong>Caixa postal:</strong> {ong.ongCep}
-                            </p>
-                          </div>
-                        ))}
+                        {necessidades
+                          .filter((ong) => (ong?.ongNome || "").includes(busca))
+                          .map((ong) => (
+                            <div
+                              key={ong.id || ong.ongId}
+                              className={`list-group-item mb-2 rounded-3 border ${
+                                darkMode
+                                  ? "bg-secondary bg-opacity-10 text-light"
+                                  : "bg-light text-dark"
+                              }`}
+                            >
+                              <h6 className="fw-bold text-secondary mb-1">
+                                {ong.ongNome}
+                              </h6>
+                              <h6 className="mb-1">
+                                <strong>Código da ONG:</strong> {ong.ongId}
+                              </h6>
+                              <p className="mb-1">
+                                <strong>Local: </strong>
+                                {ong.ongBairro}, {ong.ongRua}, {ong.ongNumero}
+                              </p>
+                              <p className="mb-1">
+                                <strong>Contato:</strong> {ong.ongTelefone}
+                              </p>
+                              <p className="mb-1">
+                                <strong>Caixa postal:</strong> {ong.ongCep}
+                              </p>
+                            </div>
+                          ))}
                       </div>
                     )}
                   </div>
