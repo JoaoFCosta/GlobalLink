@@ -94,7 +94,7 @@ const DashboardEmpresa = () => {
       <div className="container-fluid mt-3">
         <div className="row">
           <div className="col-12">
-            <div className="d-flex justify-content-between align-items-center bg-white p-4 shadow-sm border-1">
+            <div className="d-flex justify-content-between align-items-center bg-white p-4 rounded-3 shadow-sm border-1">
               <div>
                 <h3 className="mb-0">
                   Bem-vindo(a) {companyInfo.nome || companyInfo.email}!
