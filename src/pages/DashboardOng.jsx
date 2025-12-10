@@ -19,7 +19,7 @@ const DashboardOng = () => {
   const navigate = useNavigate();
 
   const brokerHost = "broker.hivemq.com";
-  const brokerPort = 8000;
+  const brokerPort = 8883;
   const topic = "caminhao/status";
 
   const { weight, distance, status, lastUpdate, isConnected } = useMqtt(
